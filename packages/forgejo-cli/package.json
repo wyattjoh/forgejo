@@ -1,6 +1,6 @@
 {
   "name": "@wyattjoh/forgejo-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "homepage": "https://github.com/wyattjoh/forgejo#readme",
   "bugs": "https://github.com/wyattjoh/forgejo/issues",
