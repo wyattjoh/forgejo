@@ -23,24 +23,7 @@ bun run typecheck
 
 ## Installing the CLI
 
-Each [GitHub release](https://github.com/wyattjoh/forgejo/releases) carries standalone
-`forgejo` executables for Apple Silicon macOS and x86-64 Linux, with shell completions and a
-`SHA256SUMS` manifest. Bun is not required to run them.
-
-<!-- x-release-please-start-version -->
-
-```sh
-version=0.2.0 # the release to install
-platform=darwin_arm64 # or linux_amd64
-base=https://github.com/wyattjoh/forgejo/releases/download/v$version
-curl -fsSLO "$base/forgejo_${version}_${platform}.tar.gz"
-curl -fsSL "$base/SHA256SUMS" | grep "_${platform}.tar.gz" | shasum -a 256 -c
-tar -xzf "forgejo_${version}_${platform}.tar.gz" forgejo
-```
-
-<!-- x-release-please-end -->
-
-With Bun installed, the CLI and MCP server also run straight from npm:
+The CLI and MCP server are published to npm and run on Bun:
 
 ```sh
 bun add --global @wyattjoh/forgejo-cli # installs `forgejo`
