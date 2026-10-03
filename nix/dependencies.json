@@ -1,5 +1,5 @@
 {
-  "lockHash": "c6b7e4256cc2bd28560b6eec56e705f21ba16ae3da8f59d5073746c916a67ebd",
+  "lockHash": "afad21636f1fca28659ee06e09727c17cf71ae9f757246d817543ef62e57cbed",
   "workspaces": [
     {
       "path": "packages/forgejo",
@@ -32,8 +32,8 @@
     },
     {
       "location": "@modelcontextprotocol/sdk",
-      "url": "https://registry.npmjs.org/@modelcontextprotocol/sdk/-/sdk-1.30.0.tgz",
-      "hash": "sha512-xKd8OIzlqNzcqcNumGAa6g+PW2kjD5vrpcKOnfldAUPP3j7lnqMPwlTXQm8gF+UwH72z0lqaRbjr9hqGz0eITA=="
+      "url": "https://registry.npmjs.org/@modelcontextprotocol/sdk/-/sdk-1.32.0.tgz",
+      "hash": "sha512-8BviX/hK4Gd2eL1KdTwm0gfl4d3wdoErW0Jd00h6nomUAtk6IJk5vwQJc6kfWtJTzN5OEV/lgIiJKI8fiDGAlA=="
     },
     {
       "location": "accepts",
