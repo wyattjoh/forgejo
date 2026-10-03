@@ -88,6 +88,8 @@ bun run build:release
 bun run build:mcp
 ```
 
+Run `bunx lefthook install` once after `bun install` to check formatting and lint on staged files before each commit.
+
 Tests cover the CLI behavior and the OAuth/MCP HTTP flow with a fake Forgejo transport.
 Real OAuth setup requires the registered application and a reachable callback URL.
 

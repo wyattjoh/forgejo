@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    // release-please writes the changelog in its own style.
+    "CHANGELOG.md"
+  ]
+}
