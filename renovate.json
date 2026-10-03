@@ -4,5 +4,6 @@
   "semanticCommits": "enabled",
   "constraints": {
     "bun": "1.4.2"
-  }
+  },
+  "gitIgnoredAuthors": ["41898282+github-actions[bot]@users.noreply.github.com"]
 }

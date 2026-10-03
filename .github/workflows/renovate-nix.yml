@@ -1,0 +1,47 @@
+# Renovate updates bun.lock but cannot run generate:nix, so regenerate the Nix dependency manifest on
+# its branches. Pushes made with GITHUB_TOKEN do not trigger workflows, so dispatch CI for the new
+# commit explicitly.
+
+name: renovate-nix
+
+on:
+  push:
+    branches:
+      - renovate/**
+
+concurrency:
+  group: renovate-nix-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  regenerate:
+    if: github.actor == 'renovate[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.2
+
+      - name: Regenerate the Nix dependency manifest
+        run: bun scripts/nix-dependencies.ts > nix/dependencies.json
+
+      - name: Commit, push, and dispatch CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          if git diff --quiet -- nix/dependencies.json; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(deps): regenerate nix dependency manifest" -- nix/dependencies.json
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          gh workflow run ci.yml --ref "${GITHUB_REF_NAME}"
