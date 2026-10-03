@@ -171,7 +171,7 @@ const requestSchema = z
   .object({
     schema_version: z.literal(1),
     request_id: z.string().regex(/^[A-Za-z0-9._:-]{1,128}$/),
-    input: z.record(z.unknown()),
+    input: z.record(z.string(), z.unknown()),
   })
   .strict();
 const redact = (value: unknown): unknown => {

@@ -458,13 +458,10 @@ function positionalFields(positional: string): Set<string> {
 /**
  * Reads the object shape a command's input schema accepts.
  *
- * A schema that refines itself across fields is wrapped in a `ZodEffects`, so unwrap until the
- * object carrying the shape appears rather than reading the wrapper and finding nothing.
+ * Zod 4 keeps cross-field refinements on the object itself, so its shape remains available.
  */
 function inputShape(schema: CommandDefinition["input"]): Record<string, unknown> {
-  let current: unknown = schema;
-  while (current instanceof z.ZodEffects) current = current.innerType();
-  return current instanceof z.ZodObject ? (current.shape as Record<string, unknown>) : {};
+  return schema instanceof z.ZodObject ? schema.shape : {};
 }
 
 /**

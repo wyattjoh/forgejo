@@ -70,8 +70,9 @@ function api(): CommandDefinition {
       raw_field: z.array(z.string().min(3)).default([]),
       field: z.array(z.string().min(3)).default([]),
       input: z.union([z.string(), z.instanceof(Uint8Array)]).optional(),
-      page: page.optional(),
-      limit: limit.optional(),
+      // Raw API calls must not acquire pagination parameters when callers omit them.
+      page: page.unwrap().optional(),
+      limit: limit.unwrap().optional(),
       all: z.boolean().optional(),
       include: z.boolean().optional(),
       output: z.string().min(1).optional(),
