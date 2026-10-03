@@ -9,7 +9,8 @@
       "extra-files": [
         { "type": "json", "path": "packages/forgejo/package.json", "jsonpath": "$.version" },
         { "type": "json", "path": "packages/forgejo-cli/package.json", "jsonpath": "$.version" },
-        { "type": "json", "path": "packages/forgejo-mcp/package.json", "jsonpath": "$.version" }
+        { "type": "json", "path": "packages/forgejo-mcp/package.json", "jsonpath": "$.version" },
+        { "type": "generic", "path": "README.md" }
       ]
     }
   }

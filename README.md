@@ -27,8 +27,10 @@ Each [GitHub release](https://github.com/wyattjoh/forgejo/releases) carries stan
 `forgejo` executables for Apple Silicon macOS and x86-64 Linux, with shell completions and a
 `SHA256SUMS` manifest. Bun is not required to run them.
 
+<!-- x-release-please-start-version -->
+
 ```sh
-version=0.2.0 # the release to install
+version=0.3.0 # the release to install
 platform=darwin_arm64 # or linux_amd64
 base=https://github.com/wyattjoh/forgejo/releases/download/v$version
 curl -fsSLO "$base/forgejo_${version}_${platform}.tar.gz"
@@ -36,12 +38,30 @@ curl -fsSL "$base/SHA256SUMS" | grep "_${platform}.tar.gz" | shasum -a 256 -c
 tar -xzf "forgejo_${version}_${platform}.tar.gz" forgejo
 ```
 
+<!-- x-release-please-end -->
+
 With Bun installed, the CLI and MCP server also run straight from npm:
 
 ```sh
 bun add --global @wyattjoh/forgejo-cli # installs `forgejo`
 bunx @wyattjoh/forgejo-mcp             # reads the environment described in .env.example
 ```
+
+To run the CLI without installing it, use `bunx` with `-p`, because the executable name differs
+from the package name. Pin an exact version so repeat runs come from Bun's global cache, and add
+`--no-install` once it is cached so a cache miss fails instead of reaching npm:
+
+<!-- x-release-please-start-version -->
+
+```sh
+bunx -p @wyattjoh/forgejo-cli@0.3.0 forgejo --version --agent      # downloads once
+bunx --no-install -p @wyattjoh/forgejo-cli@0.3.0 forgejo issue list # cache only
+```
+
+<!-- x-release-please-end -->
+
+The [agent skill](skills/forgejo/SKILL.md) uses the same pinned `bunx` invocation when `forgejo`
+is not on `PATH`.
 
 ## HTTP MCP with Forgejo OAuth
 

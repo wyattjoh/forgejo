@@ -1,7 +1,7 @@
 ---
 name: forgejo
 description: 'Routes agent work through deterministic `forgejo --agent` mode instead of Human mode, covering repo, issue, pr, workflow, run, auth, and raw api leaves against a Forgejo host. Triggers on "forgejo", "Forgejo", "forgejo issue", "forgejo pr", "forgejo repo", "forgejo run", "forgejo api", "forgejo auth login", "--agent", "Request mode", "--input-output json", "approval.required", "Codeberg". Not for GitHub repositories, which use `gh`.'
-allowed-tools: Bash(forgejo:*), Read
+allowed-tools: Bash(forgejo:*), Bash(bunx:*), Read
 effort: medium
 ---
 
@@ -75,6 +75,7 @@ forgejo <family> <leaf> [--approve GRANT] [--dry-run] --input-output json < requ
 - `forgejo` must be on `PATH`. It stores tokens with `Bun.secrets`: the login
   Keychain on macOS, and the Secret Service through libsecret on Linux. A
   missing libsecret or locked keyring surfaces as `keychain.failed`.
+  When `forgejo` is not on `PATH` but Bun is, use the `bunx` fallback below.
 - Apple Silicon macOS and x86-64 Linux only. There is no Windows, Intel Mac,
   or ARM Linux build, and no Homebrew distribution.
 - One active identity per Forgejo Deployment URL.
@@ -86,6 +87,22 @@ forgejo <family> <leaf> [--approve GRANT] [--dry-run] --input-output json < requ
 | `FORGEJO_HOST`       | Default Host for **Human mode only**. Request mode ignores it |
 | `FORGEJO_CONFIG_DIR` | Override the Host profile store directory                     |
 | `FORGEJO_CACHE_DIR`  | Override the advertised Swagger contract cache directory      |
+
+### Running through `bunx`
+
+Substitute this prefix for `forgejo` in every command in this skill:
+
+```sh
+bunx -p @wyattjoh/forgejo-cli@0.3.0 forgejo --version --agent
+bunx --no-install -p @wyattjoh/forgejo-cli@0.3.0 forgejo <family> <leaf> --agent ...
+```
+
+Always pin the exact version shown. An exact version runs the supported release
+from Bun's global cache with nothing left to resolve; a bare package name or a
+range may re-check npm and can pick up an unsupported release. Run the
+compatibility check without `--no-install` so a cold cache downloads the package
+once. Add `--no-install` to every later call, so a cache miss fails fast instead
+of reaching the network.
 
 ## Compatibility check
 

@@ -39,6 +39,7 @@ import { createApiActionsCatalog } from "../packages/forgejo/src/api-actions-cat
 import { createIssueCatalog } from "../packages/forgejo/src/issue-catalog";
 import {
   createPairedCommandReferences,
+  renderPairedBunxCommand,
   renderPairedCommandReference,
   renderPairedVersionSupport,
   supportedVersionRange,
@@ -1459,6 +1460,9 @@ test("the Paired skill pins a caret version range and marks conditional approval
   expect(supportedVersionRange("2.4.1").exclusive_maximum).toBe("3.0.0");
   expect(() => supportedVersionRange("nightly")).toThrow("paired_skill.unsupported_version");
   expect(renderPairedVersionSupport("0.1.0", 1)).toContain("`>=0.1.0 <0.2.0`");
+  expect(renderPairedBunxCommand("0.1.0")).toContain(
+    "bunx --no-install -p @wyattjoh/forgejo-cli@0.1.0 forgejo",
+  );
 
   const catalog = createApiActionsCatalog();
   const references = createPairedCommandReferences(catalog);

@@ -47,6 +47,22 @@ export function renderPairedVersionSupport(version: string, requestSchemaVersion
   ].join(" ");
 }
 
+/**
+ * Renders the exact-version `bunx` invocation the Paired skill falls back to.
+ *
+ * @param version The installed CLI package version.
+ * @returns Markdown content for the generated bunx marker.
+ */
+export function renderPairedBunxCommand(version: string): string {
+  const { version: pinned } = supportedVersionRange(version);
+  return [
+    "```sh",
+    `bunx -p @wyattjoh/forgejo-cli@${pinned} forgejo --version --agent`,
+    `bunx --no-install -p @wyattjoh/forgejo-cli@${pinned} forgejo <family> <leaf> --agent ...`,
+    "```",
+  ].join("\n");
+}
+
 /** Returns the object shape beneath supported catalog validation wrappers. */
 function unwrapObjectSchema(
   schema: z.ZodType<Record<string, unknown>>,
