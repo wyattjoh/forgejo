@@ -1,0 +1,45 @@
+{
+  "name": "forgejo-workspace",
+  "version": "0.2.0",
+  "private": true,
+  "homepage": "https://github.com/wyattjoh/forgejo#readme",
+  "bugs": "https://github.com/wyattjoh/forgejo/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wyattjoh/forgejo.git"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "cli": "bun packages/forgejo-cli/src/main.ts",
+    "mcp": "bun packages/forgejo-mcp/src/main.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "generate": "bun scripts/generate-swagger-artifacts.ts",
+    "check:generated": "bun scripts/generate-swagger-artifacts.ts --check",
+    "generate:nix": "bun scripts/nix-dependencies.ts",
+    "check:nix": "bun scripts/nix-dependencies.ts --check",
+    "generate:paired-skill": "bun scripts/generate-paired-skill.ts",
+    "check:paired-skill": "bun scripts/generate-paired-skill.ts --check",
+    "generate:completions": "bun scripts/generate-completions.ts",
+    "check:completions": "bun scripts/generate-completions.ts --check",
+    "build:release": "scripts/build-release.sh dist/staging",
+    "build:release:all": "scripts/build-release.sh dist/staging/darwin-arm64 darwin-arm64 && scripts/build-release.sh dist/staging/linux-x64 linux-x64",
+    "package:release": "scripts/package-release.sh \"$npm_package_version\" dist/staging dist/release",
+    "accept:release": "archive=$(scripts/package-release.sh \"$npm_package_version\" dist/staging dist/release) && scripts/accept-release-artifact.sh \"$archive\"",
+    "build:mcp": "bun build --target=bun packages/forgejo-mcp/src/main.ts --outdir dist/mcp"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
+    "typescript": "^5.8.2",
+    "zod": "3.25.76"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@wyattjoh/forgejo-mcp",
+  "version": "0.2.0",
+  "private": true,
+  "homepage": "https://github.com/wyattjoh/forgejo#readme",
+  "bugs": "https://github.com/wyattjoh/forgejo/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wyattjoh/forgejo.git",
+    "directory": "packages/forgejo-mcp"
+  },
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@wyattjoh/forgejo": "workspace:*",
+    "zod": "3.25.76",
+    "zod-to-json-schema": "3.25.1"
+  }
+}

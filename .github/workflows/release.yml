@@ -1,0 +1,138 @@
+# release-please keeps a release PR open against main and cuts the tag and GitHub release when it
+# merges. Everything that must happen around a release lives in this one workflow, because events
+# created with GITHUB_TOKEN never trigger other workflows.
+
+name: release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+      prs_created: ${{ steps.release.outputs.prs_created }}
+      pr: ${{ steps.release.outputs.pr }}
+    steps:
+      - uses: googleapis/release-please-action@v5
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  # The version bump also changes the workspace versions recorded in bun.lock, the lock hash in
+  # nix/dependencies.json, and the generated skill's supported range. release-please only edits the
+  # package.json files, so regenerate the rest on its branch or main's checks go stale on merge.
+  sync-release-pr:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.prs_created == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ fromJSON(needs.release-please.outputs.pr).headBranchName }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - name: Regenerate version-dependent artifacts
+        run: |
+          set -eu
+          bun install
+          bun run --silent generate:nix > nix/dependencies.json
+          bun run generate:paired-skill
+          bun run generate:completions
+          bun run format
+
+      - name: Commit to the release branch
+        run: |
+          set -eu
+          if git diff --quiet; then
+            echo "release branch already in sync"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -qam "chore: sync generated artifacts with release version"
+          git push
+
+  publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ needs.release-please.outputs.tag_name }}
+      VERSION: ${{ needs.release-please.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      # Release PRs never run CI, so the tagged tree gets the same gates here.
+      - name: Check
+        run: |
+          set -eu
+          bun install --frozen-lockfile
+          bun test
+          bun run typecheck
+          bun run lint
+          bun run format:check
+          bun run check:generated
+          bun run check:nix
+          bun run check:paired-skill
+          bun run check:completions
+
+      - name: Build, package, and accept both targets
+        env:
+          FORGEJO_BUILD_SOURCE: release
+        run: |
+          set -eu
+          bun run build:release:all
+          scripts/package-release.sh "$VERSION" dist/staging/darwin-arm64 dist/release darwin_arm64
+          scripts/package-release.sh "$VERSION" dist/staging/linux-x64 dist/release linux_amd64
+          for archive in dist/release/forgejo_*.tar.gz; do
+            scripts/accept-release-artifact.sh "$archive"
+          done
+          (cd dist/release && sha256sum forgejo_*.tar.gz > SHA256SUMS)
+
+      # Rebuilt archives are not byte-identical, so a rerun must never mix two builds' assets.
+      # SHA256SUMS goes up last and marks a complete set; an existing archive without it makes the
+      # upload fail, and the partial assets must be deleted by hand before rerunning.
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          if gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx SHA256SUMS >/dev/null; then
+            echo "$TAG already has a complete asset set"
+            exit 0
+          fi
+          gh release upload "$TAG" dist/release/forgejo_*.tar.gz
+          gh release upload "$TAG" dist/release/SHA256SUMS

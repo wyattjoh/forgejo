@@ -1,0 +1,23 @@
+{
+  "name": "@wyattjoh/forgejo-cli",
+  "version": "0.2.0",
+  "private": true,
+  "homepage": "https://github.com/wyattjoh/forgejo#readme",
+  "bugs": "https://github.com/wyattjoh/forgejo/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wyattjoh/forgejo.git",
+    "directory": "packages/forgejo-cli"
+  },
+  "bin": {
+    "forgejo": "./src/main.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "@clack/prompts": "^1.7.0",
+    "@wyattjoh/forgejo": "workspace:*",
+    "commander": "^15.0.0",
+    "zod": "3.25.76"
+  }
+}

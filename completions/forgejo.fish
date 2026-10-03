@@ -1,0 +1,15 @@
+# Fish completion for forgejo. Generated from the Command catalog; do not edit.
+complete -c forgejo -f
+complete -c forgejo -n '__fish_use_subcommand' -a 'api auth issue pr repo run smoke workflow'
+complete -c forgejo -l version -d 'Print CLI version'
+complete -c forgejo -l agent -d 'Emit a typed outcome without prompting or inference'
+complete -c forgejo -l dry-run -d 'Plan without mutation'
+complete -c forgejo -l approve -r -d 'Approve a mutation plan'
+complete -c forgejo -l input-output -r -a json -d 'Use strict Request mode'
+complete -c forgejo -n '__fish_seen_subcommand_from auth' -a 'login status logout'
+complete -c forgejo -n '__fish_seen_subcommand_from issue' -a 'list view create edit close reopen comment delete pin unpin status'
+complete -c forgejo -n '__fish_seen_subcommand_from pr' -a 'list view create edit comment diff checkout checks review merge'
+complete -c forgejo -n '__fish_seen_subcommand_from repo' -a 'list view clone create edit rename archive unarchive delete fork'
+complete -c forgejo -n '__fish_seen_subcommand_from run' -a 'list view cancel delete download watch rerun'
+complete -c forgejo -n '__fish_seen_subcommand_from smoke' -a 'echo'
+complete -c forgejo -n '__fish_seen_subcommand_from workflow' -a 'list view run'

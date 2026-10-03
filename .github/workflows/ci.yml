@@ -1,0 +1,64 @@
+# Check every pull request with the same gates the release job runs, plus lint and formatting, and
+# prove both release targets still cross-compile and package.
+
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - name: Install frozen dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Test
+        run: bun test
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Check formatting
+        run: bun run format:check
+
+      - name: Check generated artifacts
+        run: |
+          set -eu
+          bun run check:generated
+          bun run check:nix
+          bun run check:paired-skill
+          bun run check:completions
+
+      - name: Build, package, and accept both targets
+        run: |
+          set -eu
+          bun run build:release:all
+          scripts/package-release.sh 0.0.0-ci dist/staging/darwin-arm64 dist/release darwin_arm64
+          scripts/package-release.sh 0.0.0-ci dist/staging/linux-x64 dist/release linux_amd64
+          for archive in dist/release/forgejo_*.tar.gz; do
+            scripts/accept-release-artifact.sh "${archive}"
+          done
+
+      - name: Bundle the HTTP MCP server
+        run: bun run build:mcp

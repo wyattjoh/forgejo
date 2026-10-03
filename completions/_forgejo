@@ -1,0 +1,22 @@
+#compdef forgejo
+# Zsh completion for forgejo. Generated from the Command catalog; do not edit.
+
+_forgejo() {
+  if (( CURRENT == 2 )); then
+    _values 'command family' 'api' 'auth' 'issue' 'pr' 'repo' 'run' 'smoke' 'workflow' '--version[print CLI version]'
+    return
+  fi
+
+  case "$words[2]" in
+    auth) _values 'leaf command' 'login' 'status' 'logout' '--agent[emit a typed outcome without prompting or inference]' ;;
+    issue) _values 'leaf command' 'list' 'view' 'create' 'edit' 'close' 'reopen' 'comment' 'delete' 'pin' 'unpin' 'status' '--agent[emit a typed outcome without prompting or inference]' ;;
+    pr) _values 'leaf command' 'list' 'view' 'create' 'edit' 'comment' 'diff' 'checkout' 'checks' 'review' 'merge' '--agent[emit a typed outcome without prompting or inference]' ;;
+    repo) _values 'leaf command' 'list' 'view' 'clone' 'create' 'edit' 'rename' 'archive' 'unarchive' 'delete' 'fork' '--agent[emit a typed outcome without prompting or inference]' ;;
+    run) _values 'leaf command' 'list' 'view' 'cancel' 'delete' 'download' 'watch' 'rerun' '--agent[emit a typed outcome without prompting or inference]' ;;
+    smoke) _values 'leaf command' 'echo' '--agent[emit a typed outcome without prompting or inference]' ;;
+    workflow) _values 'leaf command' 'list' 'view' 'run' '--agent[emit a typed outcome without prompting or inference]' ;;
+    *) _arguments '--agent[emit a typed outcome without prompting or inference]' '--dry-run[plan without mutation]' '--approve[approve a mutation plan]:approval grant:' '--input-output[use strict Request mode]:format:(json)' ;;
+  esac
+}
+
+_forgejo "$@"

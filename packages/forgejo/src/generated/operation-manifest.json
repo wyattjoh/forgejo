@@ -1,0 +1,649 @@
+{
+  "source": "swagger.v1.json",
+  "operations": [
+    {
+      "operation_id": "orgListRepos",
+      "method": "GET",
+      "path": "/orgs/{org}/repos",
+      "required_parameters": [
+        {
+          "name": "org",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "createOrgRepo",
+      "method": "POST",
+      "path": "/orgs/{org}/repos",
+      "required_parameters": [
+        {
+          "name": "org",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoGet",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoDelete",
+      "method": "DELETE",
+      "path": "/repos/{owner}/{repo}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoEdit",
+      "method": "PATCH",
+      "path": "/repos/{owner}/{repo}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "DownloadActionArtifact",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/actions/artifacts/{artifact_id}/zip",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "artifact_id",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "ListActionRuns",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/actions/runs",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "ActionRun",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/actions/runs/{run_id}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "run_id",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "DeleteActionRun",
+      "method": "DELETE",
+      "path": "/repos/{owner}/{repo}/actions/runs/{run_id}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "run_id",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "ListActionRunArtifacts",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/actions/runs/{run_id}/artifacts",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "run_id",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "CancelActionRun",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/actions/runs/{run_id}/cancel",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "run_id",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "ListActionRunJobs",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/actions/runs/{run_id}/jobs",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "run_id",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoGetActionRunLogs",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/actions/runs/{run_id}/logs",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "run_id",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "DispatchWorkflow",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/actions/workflows/{workflowfilename}/dispatches",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "workflowfilename",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoGetCombinedStatusByRef",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/commits/{ref}/status",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "ref",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "createFork",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/forks",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "issueListIssues",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/issues",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "issueCreateIssue",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/issues",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "issueGetIssue",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/issues/{index}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "issueDelete",
+      "method": "DELETE",
+      "path": "/repos/{owner}/{repo}/issues/{index}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "issueEditIssue",
+      "method": "PATCH",
+      "path": "/repos/{owner}/{repo}/issues/{index}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "issueGetComments",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/issues/{index}/comments",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "issueCreateComment",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/issues/{index}/comments",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "issueReplaceLabels",
+      "method": "PUT",
+      "path": "/repos/{owner}/{repo}/issues/{index}/labels",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "pinIssue",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/issues/{index}/pin",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "unpinIssue",
+      "method": "DELETE",
+      "path": "/repos/{owner}/{repo}/issues/{index}/pin",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "issueGetMilestonesList",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/milestones",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoListPullRequests",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/pulls",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoCreatePullRequest",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/pulls",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoGetPullRequest",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/pulls/{index}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoEditPullRequest",
+      "method": "PATCH",
+      "path": "/repos/{owner}/{repo}/pulls/{index}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoDownloadPullDiffOrPatch",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/pulls/{index}.{diffType}",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        },
+        {
+          "name": "diffType",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoMergePullRequest",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/pulls/{index}/merge",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoCreatePullReviewRequests",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/pulls/{index}/requested_reviewers",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        },
+        {
+          "name": "body",
+          "in": "body"
+        }
+      ]
+    },
+    {
+      "operation_id": "repoCreatePullReview",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/pulls/{index}/reviews",
+      "required_parameters": [
+        {
+          "name": "owner",
+          "in": "path"
+        },
+        {
+          "name": "repo",
+          "in": "path"
+        },
+        {
+          "name": "index",
+          "in": "path"
+        },
+        {
+          "name": "body",
+          "in": "body"
+        }
+      ]
+    },
+    {
+      "operation_id": "userCurrentListRepos",
+      "method": "GET",
+      "path": "/user/repos",
+      "required_parameters": []
+    },
+    {
+      "operation_id": "createCurrentUserRepo",
+      "method": "POST",
+      "path": "/user/repos",
+      "required_parameters": []
+    },
+    {
+      "operation_id": "userListRepos",
+      "method": "GET",
+      "path": "/users/{username}/repos",
+      "required_parameters": [
+        {
+          "name": "username",
+          "in": "path"
+        }
+      ]
+    }
+  ]
+}

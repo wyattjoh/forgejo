@@ -1,0 +1,14 @@
+services:
+  forgejo-mcp:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MCP_LISTEN_HOST: 0.0.0.0
+      MCP_DATABASE_PATH: /app/data/oauth.sqlite
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - oauth-data:/app/data
+volumes:
+  oauth-data:
