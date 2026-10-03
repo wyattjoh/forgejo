@@ -1426,7 +1426,7 @@ test("every caught failure is bound as `error`, which is the name the read scan 
 });
 
 test("the error-code shape is written once, so the sites cannot drift apart again", async () => {
-  // Five copies of the same literal had already drifted: ticket 01 found the executor rejecting
+  // Five copies of the same literal had already drifted: the executor was rejecting
   // codes the others accepted. A copy pasted into a new site is what this catches, since the
   // read-level enumeration above only sees a site that skips the guard entirely.
   const literal = /\][+*]?\\\./;

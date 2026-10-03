@@ -11,8 +11,7 @@ export type SecretsPort = {
 
 /**
  * Creates a credential store backed by the OS secret store: macOS Keychain or the Linux Secret
- * Service through libsecret. Items keep the service and account the Swift helper wrote, so a
- * token saved by an older build stays addressable.
+ * Service through libsecret.
  *
  * `noUi` is accepted for the store contract but has no effect: `Bun.secrets` offers no way to
  * forbid an access prompt.

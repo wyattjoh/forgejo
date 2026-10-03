@@ -118,7 +118,7 @@ The Keychain authorizes access according to Keychain access controls and code id
 
 - Invoke the absolute executable with an argument array. Never interpolate a shell command.
 - Let `security add-generic-password … -U -w` prompt directly when practical. Do not put tokens in command arguments, environment variables, errors, debug output, or snapshots.
-- Use a stable, namespaced service identifier and canonical host plus account attributes. Define host canonicalization in the auth/config semantics ticket.
+- Use a stable, namespaced service identifier and canonical host plus account attributes. Define host canonicalization in the auth/config semantics design.
 - Distinguish “not found,” user cancellation/denial, locked Keychain, malformed output, and process failure.
 - Before committing to this backend, acceptance-test create/read/update/delete from the signed executable on clean Intel and Apple Silicon accounts, including first-access prompts.
 - Move to a Security.framework helper only if product requirements demand stronger application-specific access controls or non-interactive writes that the `security` workflow cannot safely provide.
@@ -308,9 +308,9 @@ Keep command handlers pure where possible: parsed input plus injected services s
 
 ---
 
-## Decisions deferred to later tickets
+## Decisions deferred to later work
 
-The implementation-seam and release tickets still need to choose:
+The implementation-seam and release work still needs to choose:
 
 1. whether `parseArgs` remains sufficient or Commander is justified;
 2. the exact canonical command metadata representation;

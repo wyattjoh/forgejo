@@ -17,7 +17,7 @@ This report uses the current official `gh` command families as vocabulary ([auth
 
 ## Recommended finite matrix
 
-This is a research recommendation for the command-matrix ticket, not a final scope decision.
+This is a research recommendation for the command matrix, not a final scope decision.
 
 ### `auth`
 
@@ -165,7 +165,7 @@ Pando’s protocol is the appropriate baseline: one strict versioned request on 
 | Binary/filesystem           | repo archives, PR binary diffs, logs ZIP, artifact ZIP, `api` binary responses                                                      | Require explicit destination or byte-safe result metadata; avoid embedding unbounded/base64 payloads in the JSON envelope; report checksums and written paths. |
 | Arbitrary REST              | mutating `api` methods                                                                                                              | Classify method/path before execution; support dry-run only when honest; require approval for destructive or unknown writes.                                   |
 
-## Facts downstream tickets must honor
+## Facts downstream work must honor
 
 - **Command matrix:** absence from the Forgejo 16 contract is not permission to emulate GitHub semantics. Keep the recommended leaf set finite and leave all 506 operations reachable, if at all, through a guarded REST escape hatch.
 - **Repository targeting:** host is part of identity; self-hosted URL, owner/name, selected credential and local remote resolution must remain explicit.

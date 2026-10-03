@@ -179,8 +179,8 @@ test("a run's artifacts are read from the bare array the contract advertises", a
 
 test("a name filter reaches the Host and paging survives a Host that serves short pages", async () => {
   // A Host with `[api] MAX_RESPONSE_ITEMS = 20` serves twenty entries for a hundred-entry request.
-  // Treating a short page as the last one would hide artifacts 21 and up, which is this ticket's
-  // own defect, so only an empty page ends the walk.
+  // Treating a short page as the last one would hide artifacts 21 and up, the defect this
+  // guards against, so only an empty page ends the walk.
   const { fetchAdapter, requested } = transport({
     [`${artifacts}?page=1&limit=100&name=coverage`]: artifactPage(1, 20),
     [`${artifacts}?page=2&limit=100&name=coverage`]: artifactPage(21, 20),
@@ -222,8 +222,8 @@ test("an artifact listing that never ends fails loudly instead of answering from
 });
 
 test("an artifact page that decodes to nothing ends the walk rather than failing", async () => {
-  // A Host answering an empty body decodes to undefined, which reads as no entries. Ticket 03's
-  // `jsonObject` would reject that, and would also leave `.artifacts` undefined on the bare array.
+  // A Host answering an empty body decodes to undefined, which reads as no entries. A strict
+  // `jsonObject` decode would reject that, and would also leave `.artifacts` undefined on the bare array.
   const { fetchAdapter } = transport({
     [`${artifacts}?page=1&limit=100`]: JSON.stringify([{ id: 5, name: "coverage" }]),
     [`${artifacts}?page=2&limit=100`]: "",
