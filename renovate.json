@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "schedule:weekly", "group:allNonMajor"],
+  "semanticCommits": "enabled",
+  "constraints": {
+    "bun": "1.4.2"
+  }
+}
