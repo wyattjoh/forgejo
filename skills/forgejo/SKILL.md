@@ -13,7 +13,7 @@ ordinary schema-derived flags while disabling prompts and Host/repository
 inference, then writes exactly one typed Command outcome. Request mode retains
 the lower-level versioned JSON envelope.
 
-Generated from `forgejo` v0.2.0. This skill supports CLI versions `>=0.2.0 <0.3.0` and Request schema version `1`.
+Generated from `forgejo` v0.3.0. This skill supports CLI versions `>=0.3.0 <0.4.0` and Request schema version `1`.
 
 ## Use Agent mode, not Human mode
 
