@@ -2,6 +2,9 @@
 
 A Bun workspace with a reusable Forgejo library, a command-line client, and an HTTP MCP server.
 
+This is an unofficial client. It is not affiliated with or endorsed by the
+[Forgejo project](https://forgejo.org) or Codeberg e.V.
+
 | Package                                                   | Purpose                                                                 |
 | --------------------------------------------------------- | ----------------------------------------------------------------------- |
 | [`@wyattjoh/forgejo`](packages/forgejo/README.md)         | Explicit-credential library and shared command runtime                  |
