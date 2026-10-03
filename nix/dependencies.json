@@ -1,5 +1,5 @@
 {
-  "lockHash": "24497ef3da8002e8cc8e4e738d2b541d6f4faa14b0530e58438927770dd0ec95",
+  "lockHash": "db92c059f0e44de51fa3c3928ddf4f5dc163829a4a6e1856b18407cf51be170c",
   "workspaces": [
     {
       "path": "packages/forgejo",
@@ -34,11 +34,6 @@
       "location": "@modelcontextprotocol/sdk",
       "url": "https://registry.npmjs.org/@modelcontextprotocol/sdk/-/sdk-1.30.0.tgz",
       "hash": "sha512-xKd8OIzlqNzcqcNumGAa6g+PW2kjD5vrpcKOnfldAUPP3j7lnqMPwlTXQm8gF+UwH72z0lqaRbjr9hqGz0eITA=="
-    },
-    {
-      "location": "@modelcontextprotocol/sdk/node_modules/zod",
-      "url": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
-      "hash": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q=="
     },
     {
       "location": "@modelcontextprotocol/sdk/node_modules/zod-to-json-schema",
@@ -522,8 +517,8 @@
     },
     {
       "location": "zod",
-      "url": "https://registry.npmjs.org/zod/-/zod-3.25.76.tgz",
-      "hash": "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="
+      "url": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
+      "hash": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q=="
     },
     {
       "location": "zod-to-json-schema",
