@@ -29,10 +29,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.30.0",
+    "@modelcontextprotocol/sdk": "1.32.0",
     "@wyattjoh/forgejo": "workspace:*",
     "zod": "3.25.76",
-    "zod-to-json-schema": "3.25.1"
+    "zod-to-json-schema": "3.25.2"
   },
   "engines": {
     "bun": ">=1.4.2"
