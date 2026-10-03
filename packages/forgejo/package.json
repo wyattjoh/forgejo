@@ -1,6 +1,6 @@
 {
   "name": "@wyattjoh/forgejo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Unofficial Forgejo client library and shared command runtime with explicit credentials.",
   "keywords": [
     "codeberg",
