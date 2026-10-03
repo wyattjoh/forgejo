@@ -37,8 +37,8 @@ from the package name. Pin an exact version so repeat runs come from Bun's globa
 <!-- x-release-please-start-version -->
 
 ```sh
-bunx -p @wyattjoh/forgejo-cli@0.2.0 forgejo --version --agent      # downloads once
-bunx --no-install -p @wyattjoh/forgejo-cli@0.2.0 forgejo issue list # cache only
+bunx -p @wyattjoh/forgejo-cli@0.2.1 forgejo --version --agent      # downloads once
+bunx --no-install -p @wyattjoh/forgejo-cli@0.2.1 forgejo issue list # cache only
 ```
 
 <!-- x-release-please-end -->
