@@ -7,7 +7,6 @@ import {
 } from "@wyattjoh/forgejo";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
-import { zodToJsonSchema } from "zod-to-json-schema";
 import { z } from "zod";
 import type { AuthenticatedUser } from "./oauth";
 import type { McpConfig } from "./config";
@@ -38,9 +37,8 @@ const localFields = new Set([
   "log",
   "log_failed",
 ]);
-function objectSchema(schema: z.ZodType<Record<string, unknown>>): z.AnyZodObject {
+function objectSchema(schema: z.ZodType<Record<string, unknown>>): z.ZodObject {
   if (schema instanceof z.ZodObject) return schema;
-  if (schema instanceof z.ZodEffects) return objectSchema(schema.innerType());
   throw new Error("Unsupported catalog input schema");
 }
 export function mcpCatalog(config: McpConfig, scopes: string[]): CommandDefinition[] {
@@ -105,7 +103,7 @@ export function createMcpServer(
       tool: {
         name: definition.name.replaceAll(" ", "_"),
         description: `${definition.description}. Operates on ${config.forgejoHost} as the signed-in Forgejo user.${definition.mutation ? " First call returns planned effects and an approval grant; repeat identical inputs with _approval to execute." : ""}`,
-        inputSchema: zodToJsonSchema(schema, { $refStrategy: "none" }) as {
+        inputSchema: z.toJSONSchema(schema, { target: "draft-7", io: "input" }) as {
           type: "object";
           properties: Record<string, unknown>;
         },

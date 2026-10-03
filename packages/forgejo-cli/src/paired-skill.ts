@@ -63,12 +63,11 @@ export function renderPairedBunxCommand(version: string): string {
   ].join("\n");
 }
 
-/** Returns the object shape beneath supported catalog validation wrappers. */
-function unwrapObjectSchema(
-  schema: z.ZodType<Record<string, unknown>>,
-): z.AnyZodObject | undefined {
+/**
+ * Returns a catalog object, whose refinements retain its shape in Zod 4.
+ */
+function unwrapObjectSchema(schema: z.ZodType<Record<string, unknown>>): z.ZodObject | undefined {
   if (schema instanceof z.ZodObject) return schema;
-  if (schema instanceof z.ZodEffects) return unwrapObjectSchema(schema.innerType());
   return undefined;
 }
 

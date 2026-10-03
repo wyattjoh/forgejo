@@ -40,9 +40,10 @@ function fixtureInput(schema: z.ZodType<Record<string, unknown>>): Record<string
   return value as Record<string, unknown>;
 }
 
-/** Produces the smallest representative value accepted by a Zod schema. */
-function fixtureValue(schema: z.ZodTypeAny): unknown {
-  if (schema instanceof z.ZodEffects) return fixtureValue(schema.innerType());
+/**
+ * Produces the smallest representative value accepted by a Zod schema.
+ */
+function fixtureValue(schema: z.core.$ZodType): unknown {
   if (schema instanceof z.ZodOptional || schema instanceof z.ZodDefault) return undefined;
   if (schema instanceof z.ZodNullable) return fixtureValue(schema.unwrap());
   if (schema instanceof z.ZodString) return "fixture";
@@ -50,20 +51,18 @@ function fixtureValue(schema: z.ZodTypeAny): unknown {
   if (schema instanceof z.ZodBoolean) return false;
   if (schema instanceof z.ZodLiteral) return schema.value;
   if (schema instanceof z.ZodEnum) return schema.options[0];
-  if (schema instanceof z.ZodNativeEnum)
-    return Object.values(schema.enum).find((value) => typeof value === "string");
   if (schema instanceof z.ZodArray) return [fixtureValue(schema.element)];
-  if (schema instanceof z.ZodTuple) return schema.items.map(fixtureValue);
+  if (schema instanceof z.ZodTuple) return schema.def.items.map(fixtureValue);
   if (schema instanceof z.ZodUnion) return fixtureValue(schema.options[0]!);
   if (schema instanceof z.ZodRecord) return {};
   if (schema instanceof z.ZodObject)
     return Object.fromEntries(
       Object.entries(schema.shape).flatMap(([key, value]) => {
-        const fixture = fixtureValue(value as z.ZodTypeAny);
+        const fixture = fixtureValue(value as z.core.$ZodType);
         return fixture === undefined ? [] : [[key, fixture]];
       }),
     );
-  throw new Error(`fixture.unsupported_schema:${schema._def.typeName}`);
+  throw new Error(`fixture.unsupported_schema:${schema._zod.def.type}`);
 }
 
 /** Derives the compatibility-fixture inventory from the authoritative Command catalog. */

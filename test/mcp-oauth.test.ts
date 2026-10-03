@@ -309,7 +309,27 @@ test("the MCP SDK discovers, registers, authorizes, and calls tools over HTTP", 
     // SDK 1.30 declares sessionId as string | undefined while Transport uses
     // an optional string, which disagrees under exactOptionalPropertyTypes.
     await client.connect(transport as Transport);
-    expect((await client.listTools()).tools.some((tool) => tool.name === "repo_view")).toBe(true);
+    const tools = (await client.listTools()).tools;
+    const repoView = tools.find((tool) => tool.name === "repo_view");
+    expect(repoView?.inputSchema).toMatchObject({
+      type: "object",
+      properties: {
+        repo: { type: "string" },
+        _approval: { type: "string" },
+        _dry_run: { type: "boolean" },
+      },
+      additionalProperties: false,
+    });
+    const pattern = (repoView!.inputSchema.properties!.repo as { pattern: string }).pattern;
+    expect(typeof pattern).toBe("string");
+    const repoPattern = new RegExp(pattern);
+    expect(repoPattern.test("alice/demo")).toBe(true);
+    expect(repoPattern.test("invalid repo")).toBe(false);
+    for (const tool of tools) {
+      expect(tool.inputSchema.type).toBe("object");
+      expect(tool.inputSchema.properties).toBeDefined();
+      expect(tool.inputSchema.properties).not.toHaveProperty("host");
+    }
     const result = await client.callTool({ name: "repo_view", arguments: { repo: "alice/demo" } });
     expect(result.isError).toBe(false);
     expect(JSON.stringify(result)).toContain("alice/demo");
@@ -478,6 +498,13 @@ test("HTTP MCP tools use the shared core and signed per-user mutation approvals"
   expect(names).toContain("repo_delete");
   expect(names).not.toContain("pr_checkout");
   expect(names).not.toContain("api");
+  const createIssue = tools.tools.find((tool: { name: string }) => tool.name === "issue_create");
+  expect(createIssue.inputSchema.required).toContain("title");
+  expect(createIssue.inputSchema.required).not.toContain("_approval");
+  expect(createIssue.inputSchema.properties).toMatchObject({
+    title: { type: "string", minLength: 1 },
+    label: { type: "array", items: { type: "string", minLength: 1 }, default: [] },
+  });
   const view = await f.rpc(first.tokens.access_token, "tools/call", {
     name: "repo_view",
     arguments: { repo: "alice/demo" },

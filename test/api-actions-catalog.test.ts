@@ -220,6 +220,19 @@ function approval(outcome: Awaited<ReturnType<typeof execute>>): string {
   return String(outcome.error?.details.approve).replace("--approve ", "");
 }
 
+test("raw API pagination is absent unless explicitly supplied", () => {
+  const schema = createApiActionsCatalog().find((command) => command.name === "api")!.input;
+  const input = schema.parse({ endpoint: "/version" });
+  expect(input).not.toHaveProperty("page");
+  expect(input).not.toHaveProperty("limit");
+  expect(schema.parse({ endpoint: "/version", page: 2, limit: 10 })).toMatchObject({
+    page: 2,
+    limit: 10,
+  });
+  expect(schema.safeParse({ endpoint: "/version", page: 0 }).success).toBe(false);
+  expect(schema.safeParse({ endpoint: "/version", limit: 101 }).success).toBe(false);
+});
+
 test("raw API returns JSON bodies, delivers binary only to explicit output, and plans writes", async () => {
   const catalog = createApiActionsCatalog();
   const json = await execute(
