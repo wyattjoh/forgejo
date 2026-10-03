@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.2](https://github.com/wyattjoh/forgejo/compare/v0.2.1...v0.2.2) (2026-10-03)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#4](https://github.com/wyattjoh/forgejo/issues/4)) ([3889933](https://github.com/wyattjoh/forgejo/commit/388993342296f0030f5631e8a49cda50bcc71b7a))
+* **deps:** update dependency zod to v4 ([#6](https://github.com/wyattjoh/forgejo/issues/6)) ([3ed80a4](https://github.com/wyattjoh/forgejo/commit/3ed80a483b3c68ef89bfe416f2d46a2b9449ce79))
+
 ## [0.2.1](https://github.com/wyattjoh/forgejo/compare/v0.2.0...v0.2.1) (2026-10-03)
 
 
