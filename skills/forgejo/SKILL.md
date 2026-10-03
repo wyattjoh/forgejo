@@ -13,7 +13,7 @@ ordinary schema-derived flags while disabling prompts and Host/repository
 inference, then writes exactly one typed Command outcome. Request mode retains
 the lower-level versioned JSON envelope.
 
-Generated from `forgejo` v0.3.0. This skill supports CLI versions `>=0.3.0 <0.4.0` and Request schema version `1`.
+Generated from `forgejo` v0.2.0. This skill supports CLI versions `>=0.2.0 <0.3.0` and Request schema version `1`.
 
 ## Use Agent mode, not Human mode
 
@@ -93,8 +93,8 @@ forgejo <family> <leaf> [--approve GRANT] [--dry-run] --input-output json < requ
 Substitute this prefix for `forgejo` in every command in this skill:
 
 ```sh
-bunx -p @wyattjoh/forgejo-cli@0.3.0 forgejo --version --agent
-bunx --no-install -p @wyattjoh/forgejo-cli@0.3.0 forgejo <family> <leaf> --agent ...
+bunx -p @wyattjoh/forgejo-cli@0.2.0 forgejo --version --agent
+bunx --no-install -p @wyattjoh/forgejo-cli@0.2.0 forgejo <family> <leaf> --agent ...
 ```
 
 Always pin the exact version shown. An exact version runs the supported release

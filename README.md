@@ -30,7 +30,7 @@ Each [GitHub release](https://github.com/wyattjoh/forgejo/releases) carries stan
 <!-- x-release-please-start-version -->
 
 ```sh
-version=0.3.0 # the release to install
+version=0.2.0 # the release to install
 platform=darwin_arm64 # or linux_amd64
 base=https://github.com/wyattjoh/forgejo/releases/download/v$version
 curl -fsSLO "$base/forgejo_${version}_${platform}.tar.gz"
@@ -54,8 +54,8 @@ from the package name. Pin an exact version so repeat runs come from Bun's globa
 <!-- x-release-please-start-version -->
 
 ```sh
-bunx -p @wyattjoh/forgejo-cli@0.3.0 forgejo --version --agent      # downloads once
-bunx --no-install -p @wyattjoh/forgejo-cli@0.3.0 forgejo issue list # cache only
+bunx -p @wyattjoh/forgejo-cli@0.2.0 forgejo --version --agent      # downloads once
+bunx --no-install -p @wyattjoh/forgejo-cli@0.2.0 forgejo issue list # cache only
 ```
 
 <!-- x-release-please-end -->

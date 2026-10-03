@@ -1,6 +1,6 @@
 {
   "name": "@wyattjoh/forgejo-cli",
-  "version": "0.3.0",
+  "version": "0.2.0",
   "description": "Unofficial Forgejo command-line client with Human, Agent, and Request modes.",
   "keywords": [
     "cli",

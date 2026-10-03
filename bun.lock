@@ -14,14 +14,14 @@
     },
     "packages/forgejo": {
       "name": "@wyattjoh/forgejo",
-      "version": "0.3.0",
+      "version": "0.2.0",
       "dependencies": {
         "zod": "3.25.76",
       },
     },
     "packages/forgejo-cli": {
       "name": "@wyattjoh/forgejo-cli",
-      "version": "0.3.0",
+      "version": "0.2.0",
       "bin": {
         "forgejo": "./src/main.ts",
       },
@@ -34,7 +34,7 @@
     },
     "packages/forgejo-mcp": {
       "name": "@wyattjoh/forgejo-mcp",
-      "version": "0.3.0",
+      "version": "0.2.0",
       "dependencies": {
         "@modelcontextprotocol/sdk": "1.30.0",
         "@wyattjoh/forgejo": "workspace:*",

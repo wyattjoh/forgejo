@@ -1,5 +1,5 @@
 {
-  "lockHash": "53655393c442a22dc56217bb2d7cbca42f116cf0c8ce2033db87ebd912ffbdb9",
+  "lockHash": "0de3fd4d5d46dad83b66703265c0490c719c7e00662a1726d5ec4a267c28748b",
   "workspaces": [
     {
       "path": "packages/forgejo",
