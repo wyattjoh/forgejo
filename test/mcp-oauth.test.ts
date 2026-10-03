@@ -1,6 +1,7 @@
 import { afterEach, expect, test } from "bun:test";
 import { createHash, randomBytes } from "node:crypto";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { auth, type OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
@@ -556,7 +557,7 @@ test("HTTP rejects hostile origins, oversized bodies, invalid hosts and registra
 });
 
 test("encrypted OAuth state survives reopening and detects the wrong encryption key", async () => {
-  const directory = await mkdtemp("/private/tmp/forgejo-oauth-test-");
+  const directory = await mkdtemp(join(tmpdir(), "forgejo-oauth-test-"));
   directories.push(directory);
   const path = join(directory, "oauth.sqlite"),
     key = config.encryptionKey;
