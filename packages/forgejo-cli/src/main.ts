@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import {
   mkdir,
   mkdtemp,
@@ -11,10 +12,10 @@ import {
 } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { homedir, tmpdir } from "node:os";
-import { createFileOutputFileSystem, createOutputStore } from "../../forgejo/src/adapters";
+import { createFileOutputFileSystem, createOutputStore } from "@wyattjoh/forgejo/internal/adapters";
 import { run } from "./cli";
 import { composeCapabilities } from "./composition";
-import { createCommandCatalog } from "../../forgejo/src/catalog";
+import { createCommandCatalog } from "@wyattjoh/forgejo/internal/catalog";
 import { createClackHumanInterface } from "./human-interface";
 import { createSecretsCredentialStore } from "./credential-store";
 

@@ -1,4 +1,4 @@
-import type { CommandDefinition } from "../../forgejo/src/runtime";
+import type { CommandDefinition } from "@wyattjoh/forgejo/internal/runtime";
 
 /** Rendered, static completion scripts for the supported interactive shells. */
 export type CompletionScripts = {

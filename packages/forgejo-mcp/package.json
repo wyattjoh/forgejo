@@ -1,21 +1,40 @@
 {
   "name": "@wyattjoh/forgejo-mcp",
   "version": "0.3.0",
-  "private": true,
+  "description": "Unofficial Forgejo MCP server over Streamable HTTP with per-user Forgejo OAuth login.",
+  "keywords": [
+    "codeberg",
+    "forgejo",
+    "mcp",
+    "model-context-protocol"
+  ],
   "homepage": "https://github.com/wyattjoh/forgejo#readme",
   "bugs": "https://github.com/wyattjoh/forgejo/issues",
   "license": "MIT",
+  "author": "Wyatt Johnson",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wyattjoh/forgejo.git",
     "directory": "packages/forgejo-mcp"
   },
+  "bin": {
+    "forgejo-mcp": "./src/main.ts"
+  },
+  "files": [
+    "src"
+  ],
   "type": "module",
   "exports": "./src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",
     "@wyattjoh/forgejo": "workspace:*",
     "zod": "3.25.76",
     "zod-to-json-schema": "3.25.1"
+  },
+  "engines": {
+    "bun": ">=1.4.2"
   }
 }

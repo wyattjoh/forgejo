@@ -4,25 +4,25 @@ import type {
   OutputStore,
   ProcessRunner,
   Terminal,
-} from "../../forgejo/src/adapters";
-import { createGitCredentialConfigurator } from "../../forgejo/src/git-config";
+} from "@wyattjoh/forgejo/internal/adapters";
+import { createGitCredentialConfigurator } from "@wyattjoh/forgejo/internal/git-config";
 import {
   createHostContractCacheStore,
   forgejoCacheRoot,
-} from "../../forgejo/src/host-contract-cache";
+} from "@wyattjoh/forgejo/internal/host-contract-cache";
 import { createHostConfigStore, forgejoConfigRoot } from "./host-config-store";
-import { createHttpHostInspector } from "../../forgejo/src/host-inspector";
-import { HostSession, type HostCredentialStore } from "../../forgejo/src/host-session";
-import type { FetchAdapter } from "../../forgejo/src/infrastructure";
-import type { CapabilitySet } from "../../forgejo/src/runtime";
-import { createRepositoryGateway } from "../../forgejo/src/repository-gateway";
-import { createGitOperations } from "../../forgejo/src/git-operations";
-import { createIssuesGateway } from "../../forgejo/src/issue-gateway";
-import { createPullRequestsGateway } from "../../forgejo/src/pull-request-gateway";
-import { createActionsGateway } from "../../forgejo/src/actions-gateway";
-import { createRawApiGateway } from "../../forgejo/src/raw-api-gateway";
-import { createWorkflowGateway } from "../../forgejo/src/workflow-gateway";
-import { selectedOperations } from "../../forgejo/src/generated/operation-types";
+import { createHttpHostInspector } from "@wyattjoh/forgejo/internal/host-inspector";
+import { HostSession, type HostCredentialStore } from "@wyattjoh/forgejo/internal/host-session";
+import type { FetchAdapter } from "@wyattjoh/forgejo/internal/infrastructure";
+import type { CapabilitySet } from "@wyattjoh/forgejo/internal/runtime";
+import { createRepositoryGateway } from "@wyattjoh/forgejo/internal/repository-gateway";
+import { createGitOperations } from "@wyattjoh/forgejo/internal/git-operations";
+import { createIssuesGateway } from "@wyattjoh/forgejo/internal/issue-gateway";
+import { createPullRequestsGateway } from "@wyattjoh/forgejo/internal/pull-request-gateway";
+import { createActionsGateway } from "@wyattjoh/forgejo/internal/actions-gateway";
+import { createRawApiGateway } from "@wyattjoh/forgejo/internal/raw-api-gateway";
+import { createWorkflowGateway } from "@wyattjoh/forgejo/internal/workflow-gateway";
+import { selectedOperations } from "@wyattjoh/forgejo/internal/generated/operation-types";
 
 /** Concrete adapters needed to compose command-specific capabilities. */
 export type RuntimeAdapters = {

@@ -36,6 +36,13 @@ curl -fsSL "$base/SHA256SUMS" | grep "_${platform}.tar.gz" | shasum -a 256 -c
 tar -xzf "forgejo_${version}_${platform}.tar.gz" forgejo
 ```
 
+With Bun installed, the CLI and MCP server also run straight from npm:
+
+```sh
+bun add --global @wyattjoh/forgejo-cli # installs `forgejo`
+bunx @wyattjoh/forgejo-mcp             # reads the environment described in .env.example
+```
+
 ## HTTP MCP with Forgejo OAuth
 
 The MCP deployment connects to one configured Forgejo instance. Users sign in and consent on

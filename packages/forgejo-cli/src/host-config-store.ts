@@ -1,6 +1,6 @@
 import { chmod, lstat, mkdir, open, rename } from "node:fs/promises";
 import { dirname, isAbsolute, join } from "node:path";
-import { parseHostConfig, type HostProfileStore } from "../../forgejo/src/host-session";
+import { parseHostConfig, type HostProfileStore } from "@wyattjoh/forgejo/internal/host-session";
 
 const encoder = new TextEncoder();
 

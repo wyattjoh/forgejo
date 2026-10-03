@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { chmod, lstat, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 import { readConfig } from "./config";

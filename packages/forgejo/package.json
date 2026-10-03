@@ -1,20 +1,38 @@
 {
   "name": "@wyattjoh/forgejo",
   "version": "0.3.0",
+  "description": "Unofficial Forgejo client library and shared command runtime with explicit credentials.",
+  "keywords": [
+    "codeberg",
+    "forgejo",
+    "gitea",
+    "sdk"
+  ],
   "homepage": "https://github.com/wyattjoh/forgejo#readme",
   "bugs": "https://github.com/wyattjoh/forgejo/issues",
   "license": "MIT",
+  "author": "Wyatt Johnson",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wyattjoh/forgejo.git",
     "directory": "packages/forgejo"
   },
+  "files": [
+    "src"
+  ],
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./runtime": "./src/runtime.ts"
+    "./runtime": "./src/runtime.ts",
+    "./internal/*": "./src/*.ts"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "zod": "3.25.76"
+  },
+  "engines": {
+    "bun": ">=1.4.2"
   }
 }

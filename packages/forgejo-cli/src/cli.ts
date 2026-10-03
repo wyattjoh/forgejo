@@ -12,8 +12,8 @@ import {
   type CommandDefinition,
   type CommandOutcome,
   type Invocation,
-} from "../../forgejo/src/runtime";
-import { schemaVersion } from "../../forgejo/src/runtime";
+} from "@wyattjoh/forgejo/internal/runtime";
+import { schemaVersion } from "@wyattjoh/forgejo/internal/runtime";
 import { buildStamp, cliVersion, versionLine } from "./version";
 import type { HumanInterface } from "./human-interface";
 

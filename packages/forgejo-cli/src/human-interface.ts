@@ -1,6 +1,6 @@
 import type { Readable, Writable } from "node:stream";
 import { confirm, isCancel, log, note, outro, password, select } from "@clack/prompts";
-import type { CommandError, CommandOutcome, Effect } from "../../forgejo/src/runtime";
+import type { CommandError, CommandOutcome, Effect } from "@wyattjoh/forgejo/internal/runtime";
 
 /** Interactive prompts and readable outcome rendering for Human mode. */
 export type HumanInterface = {

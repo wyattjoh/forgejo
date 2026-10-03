@@ -1,10 +1,17 @@
 {
   "name": "@wyattjoh/forgejo-cli",
   "version": "0.3.0",
-  "private": true,
+  "description": "Unofficial Forgejo command-line client with Human, Agent, and Request modes.",
+  "keywords": [
+    "cli",
+    "codeberg",
+    "forgejo",
+    "gitea"
+  ],
   "homepage": "https://github.com/wyattjoh/forgejo#readme",
   "bugs": "https://github.com/wyattjoh/forgejo/issues",
   "license": "MIT",
+  "author": "Wyatt Johnson",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wyattjoh/forgejo.git",
@@ -13,11 +20,20 @@
   "bin": {
     "forgejo": "./src/main.ts"
   },
+  "files": [
+    "src"
+  ],
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@clack/prompts": "^1.7.0",
     "@wyattjoh/forgejo": "workspace:*",
     "commander": "^15.0.0",
     "zod": "3.25.76"
+  },
+  "engines": {
+    "bun": ">=1.4.2"
   }
 }

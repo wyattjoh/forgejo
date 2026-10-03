@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { CommandDefinition } from "../../forgejo/src/runtime";
+import type { CommandDefinition } from "@wyattjoh/forgejo/internal/runtime";
 
 /** A generated, stable summary of one Request-mode leaf command. */
 export type PairedCommandReference = {

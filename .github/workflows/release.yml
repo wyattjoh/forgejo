@@ -136,3 +136,53 @@ jobs:
           fi
           gh release upload "$TAG" dist/release/forgejo_*.tar.gz
           gh release upload "$TAG" dist/release/SHA256SUMS
+
+  # Publishes through npm trusted publishing, so no token is stored; each package must list this
+  # workflow as its trusted publisher on npmjs.com. It waits on `publish` so the tagged tree has
+  # already passed every gate. `bun pm pack` rewrites the `workspace:*` ranges to the released
+  # version, which `npm publish` would otherwise ship verbatim. The library goes first because the
+  # other two depend on it, and a version already on the registry is skipped so a rerun can finish
+  # a partial publish.
+  npm:
+    needs: [release-please, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      VERSION: ${{ needs.release-please.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Install a trusted-publishing npm
+        run: npm install --global npm@12.0.2
+
+      - name: Install frozen dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Publish packages
+        run: |
+          set -eu
+          for package in forgejo forgejo-cli forgejo-mcp; do
+            name="@wyattjoh/$package"
+            if npm view "$name@$VERSION" version >/dev/null 2>&1; then
+              echo "$name@$VERSION is already published"
+              continue
+            fi
+            rm -rf dist/npm
+            (cd "packages/$package" && bun pm pack --destination ../../dist/npm --quiet)
+            npm publish dist/npm/*.tgz --access public
+          done

@@ -1,4 +1,4 @@
-import type { HostCredentialStore } from "../../forgejo/src/host-session";
+import type { HostCredentialStore } from "@wyattjoh/forgejo/internal/host-session";
 
 const service = "dev.wyattjoh.forgejo-cli.token";
 
