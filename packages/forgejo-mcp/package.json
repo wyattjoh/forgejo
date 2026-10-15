@@ -29,9 +29,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.32.0",
+    "@modelcontextprotocol/sdk": "1.32.1",
     "@wyattjoh/forgejo": "workspace:*",
-    "zod": "4.6.5"
+    "zod": "4.6.7"
   },
   "engines": {
     "bun": ">=1.4.2"
