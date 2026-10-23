@@ -3,7 +3,7 @@
   "extends": ["config:recommended", "schedule:weekly", "group:allNonMajor"],
   "semanticCommits": "enabled",
   "constraints": {
-    "bun": "1.4.2"
+    "bun": "1.4.4"
   },
   "gitIgnoredAuthors": ["41898282+github-actions[bot]@users.noreply.github.com"]
 }
