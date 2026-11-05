@@ -1,5 +1,5 @@
 {
-  "lockHash": "0906868069ff91ec991a0e42f7f378b527d5ed717f0f9387f13f86cb2d61d4ba",
+  "lockHash": "13559c0e951aa1352f81c7f73a035d15bfd40522ad2132a442a96938cbdcffae",
   "workspaces": [
     {
       "path": "packages/forgejo",
@@ -512,8 +512,8 @@
     },
     {
       "location": "zod",
-      "url": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
-      "hash": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q=="
+      "url": "https://registry.npmjs.org/zod/-/zod-4.6.6.tgz",
+      "hash": "sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA=="
     },
     {
       "location": "zod-to-json-schema",
