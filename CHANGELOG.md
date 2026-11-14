@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/wyattjoh/forgejo/compare/v0.2.2...v0.2.3) (2026-11-14)
+
+
+### Bug Fixes
+
+* release dependency security updates ([#13](https://github.com/wyattjoh/forgejo/issues/13)) ([50ec6c1](https://github.com/wyattjoh/forgejo/commit/50ec6c11e85af1e32b56a2d04c206b6345e1ed81))
+
 ## [0.2.2](https://github.com/wyattjoh/forgejo/compare/v0.2.1...v0.2.2) (2026-10-03)
 
 
