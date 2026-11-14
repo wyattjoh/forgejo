@@ -1,11 +1,11 @@
-FROM oven/bun:1.4.2 AS build
+FROM oven/bun:1.4.4 AS build
 WORKDIR /app
 COPY package.json bun.lock bunfig.toml ./
 COPY packages/ packages/
 RUN bun install --frozen-lockfile
 RUN bun build --target=bun packages/forgejo-mcp/src/main.ts --outfile /app/server.js
 
-FROM oven/bun:1.4.2
+FROM oven/bun:1.4.4
 WORKDIR /app
 RUN mkdir /app/data && chown bun:bun /app/data
 COPY --from=build /app/server.js ./server.js

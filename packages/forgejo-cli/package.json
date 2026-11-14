@@ -28,10 +28,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@clack/prompts": "^1.7.0",
+    "@clack/prompts": "^1.9.0",
     "@wyattjoh/forgejo": "workspace:*",
-    "commander": "^15.0.0",
-    "zod": "4.6.5"
+    "commander": "^15.1.0",
+    "zod": "4.6.7"
   },
   "engines": {
     "bun": ">=1.4.2"
