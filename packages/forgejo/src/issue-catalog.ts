@@ -129,7 +129,11 @@ function create(): CommandDefinition {
         issueInput(value),
       );
       const effects = [effect("issue.create", "issue.create", target(created), "succeeded")];
-      return replaceLabels(value, resolved, created, effects);
+      // Create defaults `label` to an empty list, which means "none", not "clear", so only a
+      // non-empty set earns the label write its plan promised.
+      return labels(value).length
+        ? replaceLabels(value, resolved, created, effects)
+        : { ...created, effects };
     },
   );
 }
@@ -150,13 +154,16 @@ function edit(): CommandDefinition {
     "issue edit",
     "Change an issue's title, body, labels, assignees, or due date",
     input,
-    (value) => {
-      const effects = [effect("issue.edit", "issue.edit", String(value.index))];
-      if (Array.isArray(value.label))
-        effects.push(effect("issue.labels.replace", "issue.labels.replace", String(value.index)));
-      return effects;
-    },
+    (value) => [
+      ...(edits(value) ? [effect("issue.edit", "issue.edit", String(value.index))] : []),
+      ...(Array.isArray(value.label)
+        ? [effect("issue.labels.replace", "issue.labels.replace", String(value.index))]
+        : []),
+    ],
     async (value, resolved) => {
+      // A labels-only edit has nothing to PATCH, so read the issue for the result instead of
+      // sending the Host an empty change.
+      if (!edits(value)) return replaceLabels(value, resolved, await issue(value, resolved), []);
       const edited = await resolved.gateway.edit(
         resolved.host,
         resolved.token,
@@ -330,8 +337,9 @@ async function replaceLabels(
   item: Issue,
   effects: Effect[],
 ): Promise<Record<string, unknown>> {
-  if (!Array.isArray(value.label) || labels(value).length === 0) return { ...item, effects };
+  if (!Array.isArray(value.label)) return { ...item, effects };
   try {
+    // An empty set is an explicit clear, so it is sent rather than skipped.
     await resolved.gateway.replaceLabels(
       resolved.host,
       resolved.token,
@@ -354,7 +362,12 @@ async function replaceLabels(
         ...effects,
         effect("issue.labels.replace", "issue.labels.replace", target(item), "failed"),
       ],
-      partial_error: failure(error),
+      partial_error: failure(
+        error,
+        effects.length
+          ? "Issue was changed, but a later effect failed"
+          : "Replacing the issue's labels failed",
+      ),
     };
   }
 }
@@ -413,6 +426,10 @@ function issueInput(input: Input): IssueInput {
     state: undefined,
   };
 }
+/** Reports whether an edit changes any issue field besides its labels, which need no PATCH. */
+function edits(input: Input): boolean {
+  return Object.values(issueInput(input)).some((value) => value !== undefined);
+}
 function owner(resolved: Resolved): string {
   return required(resolved.context.owner);
 }
@@ -466,8 +483,8 @@ function strings(value: unknown): string[] {
 function labels(value: Input): string[] {
   return strings(value.label);
 }
-function failure(error: unknown): CommandError {
+function failure(error: unknown, message: string): CommandError {
   const code =
     error instanceof Error && isErrorCode(error.message) ? error.message : "issue.request_failed";
-  return { code, message: "Issue was changed, but a later effect failed", details: {} };
+  return { code, message, details: {} };
 }

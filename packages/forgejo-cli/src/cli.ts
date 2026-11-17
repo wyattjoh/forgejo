@@ -136,6 +136,9 @@ const fieldOptions: Record<string, OptionDefinition[]> = {
  * Overrides a field's flag help for one command, where the same field means different things.
  */
 const commandFieldOptions: Record<string, Record<string, OptionDefinition[]>> = {
+  // An edit replaces the whole label set, so it alone needs a spelling for the empty set.
+  "issue edit": { label: [...fieldOptions.label!, ["--clear-labels", "Remove every label"]] },
+  "pr edit": { label: [...fieldOptions.label!, ["--clear-labels", "Remove every label"]] },
   api: { field: [["--field <name=value>", "Request field, repeatable"]] },
   // Dispatch inputs are strings on the wire, so `workflow run` has no raw counterpart to `--field`.
   "workflow run": {
@@ -557,6 +560,7 @@ function repeatableOptions(name: string): string[] {
 function optionInput(options: Record<string, unknown>): Record<string, unknown> {
   const aliases: Record<string, string> = {
     bodyFile: "body_file",
+    clearLabels: "clear_labels",
     defaultBranch: "default_branch",
     dueDate: "due_date",
     fastForwardOnly: "fast_forward_only",
@@ -646,9 +650,29 @@ async function materializeInput(
   }
   const job = foldJobSelector(input, command);
   if (job) return job;
+  const cleared = foldClearLabels(input, command);
+  if (cleared) return cleared;
   if (agentMode && input.run && typeof input.run === "object" && "schema_version" in input.run)
     return input.run as CommandOutcome;
   return input;
+}
+
+/**
+ * Folds `--clear-labels` into the empty label set Request mode sends to clear every label.
+ *
+ * Argv cannot spell an empty repeatable list, and a separate input field would give one change two
+ * Request shapes and two approval grants, so the flag becomes the same `label: []` instead.
+ */
+function foldClearLabels(
+  input: Record<string, unknown>,
+  command: string,
+): CommandOutcome | undefined {
+  if (input.clear_labels === undefined) return undefined;
+  if (input.label !== undefined)
+    return invalid(command, "--label and --clear-labels are mutually exclusive");
+  delete input.clear_labels;
+  input.label = [];
+  return undefined;
 }
 
 /**

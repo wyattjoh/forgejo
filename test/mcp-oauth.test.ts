@@ -505,6 +505,14 @@ test("HTTP MCP tools use the shared core and signed per-user mutation approvals"
     title: { type: "string", minLength: 1 },
     label: { type: "array", items: { type: "string", minLength: 1 }, default: [] },
   });
+  // The edit tools take the catalog's label field as is, so an empty set is the MCP way to clear.
+  for (const name of ["issue_edit", "pr_edit"]) {
+    const editTool = tools.tools.find((tool: { name: string }) => tool.name === name);
+    expect(editTool.inputSchema.properties.label).toEqual({
+      type: "array",
+      items: { type: "string", minLength: 1 },
+    });
+  }
   const view = await f.rpc(first.tokens.access_token, "tools/call", {
     name: "repo_view",
     arguments: { repo: "alice/demo" },

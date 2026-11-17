@@ -79,6 +79,18 @@ test("issue comment operations reach the same advertised path as their pull-requ
   expect(unadvertised(observed)).toEqual([]);
 });
 
+test("an empty label set clears through the advertised clear operation, with no lookup", async () => {
+  const observed: Observed[] = [];
+  const gateway = createIssuesGateway(recorder(observed));
+  await gateway.replaceLabels(host, token, owner, repo, index, []);
+  const labelsPath = "/repos/{owner}/{repo}/issues/{index}/labels";
+  expect(observed).toEqual([{ method: "DELETE", path: labelsPath }]);
+  expect(unadvertised(observed)).toEqual([]);
+  expect((contract.paths[labelsPath]?.delete as { operationId?: string })?.operationId).toBe(
+    "issueClearLabels",
+  );
+});
+
 test("pull-request checks read the advertised combined status path", async () => {
   const observed: Observed[] = [];
   const gateway = createPullRequestsGateway(recorder(observed));

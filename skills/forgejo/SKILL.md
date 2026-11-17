@@ -36,7 +36,8 @@ forgejo <family> <leaf> --agent [normal leaf flags] [--dry-run] [--approve GRANT
 positional: for example, create a repository with
 `forgejo repo create NAME --agent --host HOST --owner OWNER`, not `--name NAME`.
 Repeat list flags such as `--label`, `--assignee`, `--reviewer`, `--header`, and
-`--field`. Agent mode normalizes
+`--field`. `issue edit` and `pr edit` replace the whole label set; clear it with
+`--clear-labels`, which Request mode spells `"label": []`. Agent mode normalizes
 numbers, durations, job selectors, and stable numeric run IDs, then the catalog
 schema performs authoritative strict validation. It rejects unknown flags,
 missing values, Actions run URLs, and `--help`; use help without `--agent`.
