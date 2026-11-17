@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/wyattjoh/forgejo/compare/v0.2.3...v0.3.0) (2026-11-17)
+
+
+### Features
+
+* let issue and pr edit clear labels ([#16](https://github.com/wyattjoh/forgejo/issues/16)) ([84bc95c](https://github.com/wyattjoh/forgejo/commit/84bc95cb0b13c269457ca3911101fcbc03d8ae4d))
+
 ## [0.2.3](https://github.com/wyattjoh/forgejo/compare/v0.2.2...v0.2.3) (2026-11-14)
 
 
