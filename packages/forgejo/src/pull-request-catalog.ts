@@ -167,7 +167,10 @@ function create(): CommandDefinition {
       const effects = [
         effect("pull_request.create", "pull_request.create", target(created), "succeeded"),
       ];
-      const labeled = await replaceLabels(input, resolved, created, effects);
+      // Create defaults `label` to an empty list, which means "none", not "clear".
+      const labeled = labels(input).length
+        ? await replaceLabels(input, resolved, created, effects)
+        : { ...created, effects };
       if (labeled.partial_error || reviewers(input).length === 0) return labeled;
       try {
         await resolved.gateway.reviewers(
@@ -225,15 +228,25 @@ function edit(): CommandDefinition {
     "pr edit",
     "Change a pull request's title, body, base, labels, or assignees",
     input,
-    (value) => {
-      const effects = [effect("pull_request.edit", "pull_request.edit", String(value.index))];
-      if (Array.isArray(value.label))
-        effects.push(
-          effect("pull_request.labels.replace", "pull_request.labels.replace", String(value.index)),
-        );
-      return effects;
-    },
+    (value) => [
+      ...(sendsPatch(value)
+        ? [effect("pull_request.edit", "pull_request.edit", String(value.index))]
+        : []),
+      ...(Array.isArray(value.label)
+        ? [
+            effect(
+              "pull_request.labels.replace",
+              "pull_request.labels.replace",
+              String(value.index),
+            ),
+          ]
+        : []),
+    ],
     async (input, resolved) => {
+      // A labels-only edit has nothing to PATCH, so read the pull request for the result instead
+      // of sending the Host an empty change.
+      if (!sendsPatch(input))
+        return replaceLabels(input, resolved, await pull(input, resolved), []);
       const edited = await resolved.gateway.edit(
         resolved.host,
         resolved.token,
@@ -702,8 +715,9 @@ async function replaceLabels(
   item: PullRequest,
   effects: Effect[],
 ): Promise<Record<string, unknown>> {
-  if (!Array.isArray(value.label) || labels(value).length === 0) return { ...item, effects };
+  if (!Array.isArray(value.label)) return { ...item, effects };
   try {
+    // An empty set is an explicit clear, so it is sent rather than skipped.
     await resolved.issues.replaceLabels(
       resolved.host,
       resolved.token,
@@ -736,7 +750,12 @@ async function replaceLabels(
           "failed",
         ),
       ],
-      partial_error: partial(error, "Pull request was changed, but replacing labels failed"),
+      partial_error: partial(
+        error,
+        effects.length
+          ? "Pull request was changed, but replacing labels failed"
+          : "Replacing the pull request's labels failed",
+      ),
     };
   }
 }
@@ -795,6 +814,18 @@ function pullInput(input: Input): PullRequestInput {
     assignees: Array.isArray(input.assignee) ? strings(input.assignee) : undefined,
     milestone: stringOrUndefined(input.milestone),
   };
+}
+/**
+ * Reports whether an edit must PATCH the pull request.
+ *
+ * Only labels go through their own endpoint, so an edit that sets labels and nothing else skips the
+ * PATCH. An edit with no fields at all still sends it, as it always has.
+ */
+function sendsPatch(input: Input): boolean {
+  return (
+    !Array.isArray(input.label) ||
+    Object.values(pullInput(input)).some((value) => value !== undefined)
+  );
 }
 function pull(input: Input, resolved: Resolved): Promise<PullRequest> {
   return resolved.gateway.get(

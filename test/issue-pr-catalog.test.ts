@@ -3,7 +3,11 @@ import { readFile } from "node:fs/promises";
 import { createOutputStore } from "../packages/forgejo/src/adapters";
 import { run } from "../packages/forgejo-cli/src/cli";
 import { createIssueCatalog } from "../packages/forgejo/src/issue-catalog";
-import type { Issue, IssuesGateway } from "../packages/forgejo/src/issue-gateway";
+import {
+  createIssuesGateway,
+  type Issue,
+  type IssuesGateway,
+} from "../packages/forgejo/src/issue-gateway";
 import { createPullRequestCatalog } from "../packages/forgejo/src/pull-request-catalog";
 import {
   createPullRequestsGateway,
@@ -20,7 +24,7 @@ import {
 } from "../packages/forgejo/src/host-session";
 import type { GitOperations, GitRemote } from "../packages/forgejo/src/git-operations";
 import type { FetchAdapter } from "../packages/forgejo/src/infrastructure";
-import { execute } from "../packages/forgejo/src/runtime";
+import { execute, type CommandOutcome } from "../packages/forgejo/src/runtime";
 
 const host = "https://forgejo.example";
 const credentials: HostCredentialStore = {
@@ -103,7 +107,7 @@ test("issue edits preserve the issue when the dedicated label effect fails", asy
   const capabilities = capabilitiesFor(issues, pullGateway());
   const invocation = {
     command: "issue edit",
-    input: { host, repo: "octo/demo", index: 7, label: ["missing"] },
+    input: { host, repo: "octo/demo", index: 7, title: "Renamed", label: ["missing"] },
     requestId: "issue-edit",
     approval: undefined,
     dryRun: false,
@@ -1003,6 +1007,213 @@ function checkoutGit(checkouts: CheckoutCall[], succeeds = true): GitOperations 
     },
   };
 }
+
+/** Records every Host request a real gateway sends, answering each as the contract does. */
+function labelFetch(observed: string[]): FetchAdapter {
+  return async (input, init) => {
+    const method = (init?.method ?? "GET").toUpperCase();
+    const url = new URL(String(input));
+    observed.push(`${method} ${url.pathname.replace(/^\/api\/v1/, "")}${url.search}`);
+    if (method === "DELETE") return new Response(null, { status: 204 });
+    // The repository label list and the issue label replacement both answer with label rows.
+    if (url.pathname.endsWith("/labels")) return jsonResponse([{ id: 3, name: "bug" }]);
+    return jsonResponse({
+      number: 7,
+      title: "Fix it",
+      state: "open",
+      base: { ref: "main" },
+      head: { ref: "feature", sha: "abc" },
+    });
+  };
+}
+/** Plans, approves, and executes one Request-mode invocation against real gateways. */
+async function approvedLabelEdit(
+  command: "issue edit" | "pr edit",
+  input: Record<string, unknown>,
+) {
+  const observed: string[] = [];
+  const fetchAdapter = labelFetch(observed);
+  const capabilities = capabilitiesFor(
+    createIssuesGateway(fetchAdapter),
+    createPullRequestsGateway(fetchAdapter),
+  );
+  const catalog = command === "pr edit" ? createPullRequestCatalog() : createIssueCatalog();
+  const invocation = {
+    command,
+    input: { host, repo: "octo/demo", index: 7, ...input },
+    requestId: "label-edit",
+    approval: undefined,
+    dryRun: false,
+    mode: "request" as const,
+  };
+  const planned = await execute(invocation, catalog, capabilities);
+  expect(observed).toEqual([]);
+  const outcome = await execute(
+    { ...invocation, approval: approval(planned) },
+    catalog,
+    capabilities,
+  );
+  return { planned, outcome, observed };
+}
+for (const [command, family, base] of [
+  ["issue edit", "issue", "/repos/octo/demo/issues/7"],
+  ["pr edit", "pull_request", "/repos/octo/demo/pulls/7"],
+] as const) {
+  test(`${command} with an empty label set clears every label and sends no PATCH`, async () => {
+    const { planned, outcome, observed } = await approvedLabelEdit(command, { label: [] });
+    expect(outcome.status).toBe("success");
+    expect(planned.effects.map((effect) => effect.action)).toEqual([`${family}.labels.replace`]);
+    expect(outcome.effects.map((effect) => [effect.action, effect.state])).toEqual([
+      [`${family}.labels.replace`, "succeeded"],
+    ]);
+    expect(observed).toEqual([`GET ${base}`, "DELETE /repos/octo/demo/issues/7/labels"]);
+  });
+  test(`${command} with only labels replaces them without a PATCH`, async () => {
+    const { planned, outcome, observed } = await approvedLabelEdit(command, { label: ["bug"] });
+    expect(outcome.status).toBe("success");
+    expect(planned.effects.map((effect) => effect.action)).toEqual(
+      outcome.effects.map((effect) => effect.action),
+    );
+    expect(observed).toEqual([
+      `GET ${base}`,
+      "GET /repos/octo/demo/labels?limit=100",
+      "PUT /repos/octo/demo/issues/7/labels",
+    ]);
+  });
+  test(`${command} with fields and labels PATCHes once, then replaces labels`, async () => {
+    const { planned, outcome, observed } = await approvedLabelEdit(command, {
+      title: "Renamed",
+      label: [],
+    });
+    expect(outcome.status).toBe("success");
+    expect(planned.effects.map((effect) => effect.action)).toEqual([
+      `${family}.edit`,
+      `${family}.labels.replace`,
+    ]);
+    expect(outcome.effects.map((effect) => effect.action)).toEqual(
+      planned.effects.map((effect) => effect.action),
+    );
+    expect(observed.filter((line) => !line.startsWith("GET "))).toEqual([
+      `PATCH ${base}`,
+      "DELETE /repos/octo/demo/issues/7/labels",
+    ]);
+  });
+}
+test("a labels-only edit whose label write fails reports no claim that the item changed", async () => {
+  const pulls = pullGateway({
+    edit: async () => {
+      throw new Error("unexpected PATCH");
+    },
+  });
+  const issues = {
+    ...issueGateway(),
+    replaceLabels: async () => {
+      throw new Error("issue.label_not_found");
+    },
+  };
+  const capabilities = capabilitiesFor(issues, pulls);
+  const invocation = {
+    command: "pr edit",
+    input: { host, repo: "octo/demo", index: 7, label: ["missing"] },
+    requestId: "pr-edit",
+    approval: undefined,
+    dryRun: false,
+    mode: "request" as const,
+  };
+  const catalog = createPullRequestCatalog();
+  const planned = await execute(invocation, catalog, capabilities);
+  const outcome = await execute(
+    { ...invocation, approval: approval(planned) },
+    catalog,
+    capabilities,
+  );
+  expect(outcome.error?.code).toBe("issue.label_not_found");
+  expect(outcome.error?.message).toBe("Replacing the pull request's labels failed");
+  expect(outcome.effects.map((effect) => effect.state)).toEqual(["failed"]);
+});
+test("creating without labels still sends no label write", async () => {
+  const replaced: string[][] = [];
+  const issues = {
+    ...issueGateway(),
+    replaceLabels: async (...args: Parameters<IssuesGateway["replaceLabels"]>) =>
+      void replaced.push(args[5]),
+  };
+  const capabilities = capabilitiesFor(issues, pullGateway());
+  for (const [command, catalog, input] of [
+    ["issue create", createIssueCatalog(), { title: "New" }],
+    ["pr create", createPullRequestCatalog(), { title: "New", base: "main", head: "feature" }],
+  ] as const) {
+    const invocation = {
+      command,
+      input: { host, repo: "octo/demo", ...input },
+      requestId: "create",
+      approval: undefined,
+      dryRun: false,
+      mode: "request" as const,
+    };
+    const planned = await execute(invocation, catalog, capabilities);
+    const outcome = await execute(
+      { ...invocation, approval: approval(planned) },
+      catalog,
+      capabilities,
+    );
+    expect(outcome.status).toBe("success");
+    expect(outcome.effects.map((effect) => effect.action)).toEqual(
+      planned.effects.map((effect) => effect.action),
+    );
+  }
+  expect(replaced).toEqual([]);
+});
+/** Runs one Agent-mode argv against the issue and pull-request catalogs. */
+async function agent(argv: string[]): Promise<{ exit: number; outcome: CommandOutcome }> {
+  let stdout = "";
+  const exit = await run(
+    [...argv, "--agent", "--host", host, "--repo", "octo/demo"],
+    "",
+    (text) => void (stdout += text),
+    () => {},
+    {
+      capabilities: capabilitiesFor(issueGateway(), pullGateway()),
+      catalog: [...createIssueCatalog(), ...createPullRequestCatalog()],
+      human: undefined,
+    },
+  );
+  return { exit, outcome: JSON.parse(stdout) as CommandOutcome };
+}
+test("--clear-labels plans the same empty label set Request mode sends", async () => {
+  for (const [family, effect] of [
+    ["issue", "issue.labels.replace"],
+    ["pr", "pull_request.labels.replace"],
+  ] as const) {
+    const { outcome } = await agent([family, "edit", "7", "--clear-labels"]);
+    expect(outcome.error?.code).toBe("approval.required");
+    expect(outcome.effects.map((item) => item.action)).toEqual([effect]);
+    const capabilities = capabilitiesFor(issueGateway(), pullGateway());
+    const catalog = family === "pr" ? createPullRequestCatalog() : createIssueCatalog();
+    // The flag folds into `label: []`, so its grant approves the identical Request-mode input.
+    const executed = await execute(
+      {
+        command: `${family} edit`,
+        input: { host, repo: "octo/demo", index: 7, label: [] },
+        requestId: null,
+        approval: approval(outcome),
+        dryRun: false,
+        mode: "request",
+      },
+      catalog,
+      capabilities,
+    );
+    expect(executed.status).toBe("success");
+  }
+});
+test("--clear-labels is mutually exclusive with --label and is offered only by edits", async () => {
+  const both = await agent(["pr", "edit", "7", "--clear-labels", "--label", "bug"]);
+  expect(both.exit).not.toBe(0);
+  expect(both.outcome.error?.message).toBe("--label and --clear-labels are mutually exclusive");
+  const created = await agent(["issue", "create", "--title", "New", "--clear-labels"]);
+  expect(created.exit).not.toBe(0);
+  expect(created.outcome.effects).toEqual([]);
+});
 function capabilitiesFor(issues: IssuesGateway, pullRequests: PullRequestsGateway) {
   const delivered = new Map<string, Uint8Array>();
   return {

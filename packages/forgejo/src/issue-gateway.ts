@@ -90,6 +90,9 @@ export type IssuesGateway = {
     index: number,
     pinned: boolean,
   ): Promise<void>;
+  /**
+   * Replaces an issue's or pull request's labels; an empty set removes every label.
+   */
   replaceLabels(
     host: string,
     token: string,
@@ -200,6 +203,19 @@ export function createIssuesGateway(fetchAdapter: FetchAdapter): IssuesGateway {
         "issue",
       ),
     replaceLabels: async (host, token, owner, repo, index, labels) => {
+      // The contract's dedicated clear operation needs no label lookup, and states the intent
+      // rather than relying on how the Host reads an empty replacement set.
+      if (labels.length === 0) {
+        await call<void>(
+          fetchAdapter,
+          host,
+          token,
+          `${issuePath(owner, repo, index)}/labels`,
+          { method: "DELETE" },
+          "issue",
+        );
+        return;
+      }
       const available = await callArray(
         fetchAdapter,
         host,
