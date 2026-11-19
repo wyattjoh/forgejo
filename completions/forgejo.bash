@@ -10,7 +10,7 @@ _forgejo() {
     auth) words="login status logout --agent" ;;
     issue) words="list view create edit close reopen comment delete pin unpin status --agent" ;;
     pr) words="list view create edit comment diff checkout checks review merge --agent" ;;
-    repo) words="list view clone create edit rename archive unarchive delete fork --agent" ;;
+    repo) words="list view clone create edit rename archive unarchive delete branch-delete fork --agent" ;;
     run) words="list view cancel delete download watch rerun --agent" ;;
     smoke) words="echo --agent" ;;
     workflow) words="list view run --agent" ;;

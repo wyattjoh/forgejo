@@ -125,8 +125,84 @@ export function createRepositoryCatalog(): CommandDefinition[] {
         return {};
       },
     ),
+    deleteBranch(),
     fork(),
   ];
+}
+function deleteBranch(): CommandDefinition {
+  const name = "repo branch-delete";
+  const action = "branch.delete";
+  const input = z
+    .object({
+      host: z.string().min(1).optional(),
+      repo: selector,
+      branch: z
+        .string()
+        .min(1)
+        .refine((value) =>
+          value.split("/").every((part) => part !== "" && part !== "." && part !== ".."),
+        ),
+      match_head: z.string().min(1),
+    })
+    .strict();
+  const target = (repo: unknown, branch: unknown) => `${String(repo)}:${String(branch)}`;
+
+  return {
+    name,
+    description: "Delete a branch other than the repository's default branch at the reviewed head",
+    input,
+    mutation: true,
+    plan: (value) =>
+      plan(name, value, [
+        effect(action, action, target(value.repo, value.branch), "planned", {
+          match_head: value.match_head,
+        }),
+      ]),
+    preflightBeforeApproval: true,
+    preflight: async (value, capabilities) => {
+      const resolved = await resolve(value, capabilities, true);
+      const repo = await repository(resolved);
+      const branch = String(value.branch);
+      if (!repo.default_branch) throw new Error("repository.invalid_response");
+      if (repo.default_branch === branch)
+        throw commandFailure("repository.default_branch", "Cannot delete the default branch", {
+          branch,
+        });
+      const head = await resolved.gateway.branchHead(
+        resolved.host,
+        resolved.token,
+        repo.owner,
+        repo.name,
+        branch,
+      );
+      if (head !== value.match_head)
+        throw commandFailure(
+          "repository.branch_head_changed",
+          "Branch head differs from the reviewed commit",
+          {
+            branch,
+            expected: value.match_head,
+            actual: head,
+          },
+        );
+      return {
+        result: { repository: repo.full_name, branch, head },
+        context: contextRecord(resolved.context),
+      };
+    },
+    handler: async (value, capabilities) => {
+      const resolved = await resolve(value, capabilities, true);
+      const owner = required(resolved.context.owner);
+      const repo = required(resolved.context.name);
+      const branch = String(value.branch);
+      await resolved.gateway.removeBranch(resolved.host, resolved.token, owner, repo, branch);
+      return {
+        result: { branch, head: value.match_head },
+        context: contextRecord(resolved.context),
+        effects: [effect(action, action, target(resolved.context.repository, branch), "succeeded")],
+      };
+    },
+  };
 }
 function scoped(): z.ZodObject<z.ZodRawShape> {
   return z.object({ host: z.string().min(1).optional(), repo: selector.optional() }).strict();

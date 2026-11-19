@@ -12,7 +12,10 @@ import {
   type HostCredentialStore,
 } from "../packages/forgejo/src/host-session";
 import { execute } from "../packages/forgejo/src/runtime";
-import type { RepositoryGateway } from "../packages/forgejo/src/repository-gateway";
+import {
+  createRepositoryGateway,
+  type RepositoryGateway,
+} from "../packages/forgejo/src/repository-gateway";
 import { createGitOperations, type GitOperations } from "../packages/forgejo/src/git-operations";
 import {
   resolveRepositoryContext,
@@ -68,6 +71,8 @@ test("repository commands return normalized reads and approval-gated mutation pl
     create: async () => repository,
     edit: async () => repository,
     remove: async () => {},
+    branchHead: async () => "a".repeat(40),
+    removeBranch: async () => {},
     fork: async () => repository,
   };
   const capabilities = {
@@ -110,6 +115,79 @@ test("repository commands return normalized reads and approval-gated mutation pl
   expect(deletion.effects).toEqual([
     expect.objectContaining({ action: "repository.delete", state: "planned" }),
   ]);
+});
+
+test("branch deletion protects the current default and checks the reviewed tip before deleting", async () => {
+  const branch = "work/cleanup";
+  const head = "a".repeat(40);
+  let currentHead = head;
+  let defaultBranch = "trunk";
+  const deletes: string[] = [];
+  const repositories = createRepositoryGateway(async (input, init) => {
+    const path = new URL(String(input)).pathname;
+    if (path === "/api/v1/repos/octo/demo") {
+      return Response.json({
+        owner: { login: "octo" },
+        name: "demo",
+        default_branch: defaultBranch,
+      });
+    }
+    expect(path).toBe("/api/v1/repos/octo/demo/branches/work%2Fcleanup");
+    if (init?.method === "DELETE") {
+      deletes.push(path);
+      return new Response(null, { status: 204 });
+    }
+    return Response.json({ commit: { id: currentHead } });
+  });
+  const capabilities = {
+    gateway: { smoke: async ({ value }: { value: string }) => ({ echoed: value }) },
+    host: session(),
+    repositories,
+    git: undefined,
+    environment: {},
+    cwd: "/tmp",
+    keychainNoUi: true,
+    clock: { now: () => new Date("2025-01-01T00:00:00Z") },
+    cancelled: () => false,
+  };
+  const invoke = (target: string, approval?: string, dryRun = false) =>
+    execute(
+      {
+        command: "repo branch-delete",
+        input: { host, repo: "octo/demo", branch: target, match_head: head },
+        requestId: null,
+        approval,
+        dryRun,
+        mode: "request",
+      },
+      createRepositoryCatalog(),
+      capabilities,
+    );
+
+  expect((await invoke("trunk")).error?.code).toBe("repository.default_branch");
+  const preview = await invoke(branch, undefined, true);
+  expect(preview.result).toMatchObject({ branch, head });
+  const planned = await invoke(branch);
+  expect(planned.error?.code).toBe("approval.required");
+  const step = planned.next_steps.find((item) => item.action === "approve");
+  if (!step || step.action !== "approve") throw new Error("Expected approval");
+  defaultBranch = branch;
+  expect((await invoke(branch, step.grant)).error?.code).toBe("repository.default_branch");
+  defaultBranch = "trunk";
+  currentHead = "b".repeat(40);
+  expect((await invoke(branch, step.grant)).error?.code).toBe("repository.branch_head_changed");
+  expect(deletes).toHaveLength(0);
+  currentHead = head;
+  const deleted = await invoke(branch, step.grant);
+  expect(deleted.status).toBe("success");
+  expect(deleted.effects).toEqual([
+    expect.objectContaining({
+      action: "branch.delete",
+      target: "octo/demo:work/cleanup",
+      state: "succeeded",
+    }),
+  ]);
+  expect(deletes).toHaveLength(1);
 });
 
 function git(): GitOperations {
@@ -189,6 +267,8 @@ test("Human repo list uses one configured Host without prompting", async () => {
           create: async () => repository,
           edit: async () => repository,
           remove: async () => {},
+          branchHead: async () => "a".repeat(40),
+          removeBranch: async () => {},
           fork: async () => repository,
         },
         git: undefined,
@@ -239,6 +319,8 @@ test("Human repo list prompts when multiple Hosts are configured", async () => {
           create: async () => repository,
           edit: async () => repository,
           remove: async () => {},
+          branchHead: async () => "a".repeat(40),
+          removeBranch: async () => {},
           fork: async () => repository,
         },
         git: undefined,
@@ -306,6 +388,8 @@ test("repo create accepts the authenticated account as an explicit owner", async
     },
     edit: async () => repository,
     remove: async () => {},
+    branchHead: async () => "a".repeat(40),
+    removeBranch: async () => {},
     fork: async () => repository,
   };
   const capabilities = {
@@ -360,6 +444,8 @@ test("repo fork accepts the authenticated account as an explicit owner", async (
     create: async () => repository,
     edit: async () => repository,
     remove: async () => {},
+    branchHead: async () => "a".repeat(40),
+    removeBranch: async () => {},
     fork: async (_host, _token, _owner, name, organization) => {
       organizations.push(organization);
       // Forgejo resolves the fork's organization against organizations only, so a user name
@@ -501,6 +587,8 @@ test("clone, create source partial failure, and fork clone retain ordered effect
     },
     edit: async () => localRepository,
     remove: async () => {},
+    branchHead: async () => "a".repeat(40),
+    removeBranch: async () => {},
     fork: async () => ({ ...localRepository, name: "forked", full_name: "octo/forked" }),
   };
   const capabilities = {

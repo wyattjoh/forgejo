@@ -63,6 +63,20 @@ export type RepositoryGateway = {
     input: EditRepositoryInput,
   ): Promise<Repository>;
   remove(host: string, token: string, owner: string, name: string): Promise<void>;
+  branchHead(
+    host: string,
+    token: string,
+    owner: string,
+    name: string,
+    branch: string,
+  ): Promise<string>;
+  removeBranch(
+    host: string,
+    token: string,
+    owner: string,
+    name: string,
+    branch: string,
+  ): Promise<void>;
   /**
    * Forks a repository. `organization` names the owning organization when the fork is not
    * created under the authenticated account. Forgejo resolves that name against organizations
@@ -168,6 +182,17 @@ export function createRepositoryGateway(fetchAdapter: FetchAdapter): RepositoryG
       ),
     remove: async (host, token, owner, name) =>
       call<void>(host, token, repoPath(owner, name), { method: "DELETE" }),
+    branchHead: async (host, token, owner, name, branch) => {
+      const value = await call<{ commit?: { id?: unknown } } | null>(
+        host,
+        token,
+        branchPath(owner, name, branch),
+        { method: "GET" },
+      );
+      return string(value?.commit?.id, "repository.invalid_response");
+    },
+    removeBranch: async (host, token, owner, name, branch) =>
+      call<void>(host, token, branchPath(owner, name, branch), { method: "DELETE" }),
     fork: async (host, token, owner, name, organization, targetName) =>
       mutate(
         host,
@@ -184,6 +209,9 @@ function json(method: string, body: string): RequestInit {
 }
 function repoPath(owner: string, name: string): string {
   return `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}`;
+}
+function branchPath(owner: string, name: string, branch: string): string {
+  return `${repoPath(owner, name)}/branches/${encodeURIComponent(branch)}`;
 }
 function normalize(host: string, value: unknown): Repository {
   const source = (value && typeof value === "object" ? value : {}) as Record<string, unknown>;

@@ -70,6 +70,7 @@ function createRequestFixtures(entries: CommandDefinition[]): RequestFixture[] {
   return entries.map((definition) => {
     const input = {
       ...fixtureInput(definition.input),
+      ...(definition.name === "repo branch-delete" ? { repo: "octo/demo" } : {}),
       ...(definition.name === "issue edit" ? { title: "fixture" } : {}),
       ...(definition.name === "pr review" ? { approve: true } : {}),
       ...(definition.name === "pr merge" ? { merge: true } : {}),

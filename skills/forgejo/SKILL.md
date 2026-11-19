@@ -672,51 +672,52 @@ absence, but Request mode requires both. `remote` on `pr checkout` is listed the
 same way and is required there for the same reason. Approval column: `yes` is
 always approval-gated, `no` is read-only, and `conditional` is gated by input.
 
-| Exact leaf       | Required Request input | Optional Request input                                                                                             | Approval-gated |
-| ---------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------- |
-| `api`            | endpoint               | host, method, header, raw_field, field, input, page, limit, all, include, output                                   | conditional    |
-| `auth login`     | url, token             | none                                                                                                               | yes            |
-| `auth logout`    | host                   | none                                                                                                               | yes            |
-| `auth status`    | host                   | none                                                                                                               | no             |
-| `issue close`    | index                  | host, repo                                                                                                         | yes            |
-| `issue comment`  | index, body            | host, repo                                                                                                         | yes            |
-| `issue create`   | title                  | host, repo, body, assignee, label, milestone, due_date                                                             | yes            |
-| `issue delete`   | index                  | host, repo                                                                                                         | yes            |
-| `issue edit`     | index                  | host, repo, title, body, assignee, label, milestone, due_date                                                      | yes            |
-| `issue list`     | none                   | host, repo, state, label, assignee, author, mention, milestone, search, type, sort, page, limit, all               | no             |
-| `issue pin`      | index                  | host, repo                                                                                                         | yes            |
-| `issue reopen`   | index                  | host, repo                                                                                                         | yes            |
-| `issue status`   | none                   | host, repo                                                                                                         | no             |
-| `issue unpin`    | index                  | host, repo                                                                                                         | yes            |
-| `issue view`     | index                  | host, repo, comments                                                                                               | no             |
-| `pr checkout`    | index                  | host, repo, branch, force, remote                                                                                  | yes            |
-| `pr checks`      | index                  | host, repo, watch, interval, timeout                                                                               | no             |
-| `pr comment`     | index, body            | host, repo                                                                                                         | yes            |
-| `pr create`      | title, base            | host, repo, body, head, assignee, label, milestone, reviewer                                                       | yes            |
-| `pr diff`        | index                  | host, repo, patch, binary, output                                                                                  | no             |
-| `pr edit`        | index                  | host, repo, title, body, base, assignee, label, milestone                                                          | yes            |
-| `pr list`        | none                   | host, repo, state, base, head, author, label, milestone, sort, page, limit, all                                    | no             |
-| `pr merge`       | index                  | host, repo, merge, rebase, rebase_merge, squash, fast_forward_only, delete_branch, match_head, when_checks_succeed | yes            |
-| `pr review`      | index                  | host, repo, approve, request_changes, comment, body                                                                | yes            |
-| `pr view`        | index                  | host, repo, comments                                                                                               | no             |
-| `repo archive`   | none                   | host, repo                                                                                                         | yes            |
-| `repo clone`     | none                   | host, repo, directory, remote                                                                                      | yes            |
-| `repo create`    | name                   | host, owner, description, private, init, default_branch, source, remote, push                                      | yes            |
-| `repo delete`    | none                   | host, repo                                                                                                         | yes            |
-| `repo edit`      | none                   | host, repo, description, website, default_branch, visibility                                                       | yes            |
-| `repo fork`      | none                   | host, repo, owner, name, clone, remote                                                                             | yes            |
-| `repo list`      | none                   | host, owner, page, limit, visibility, archived                                                                     | no             |
-| `repo rename`    | name                   | host, repo                                                                                                         | yes            |
-| `repo unarchive` | none                   | host, repo                                                                                                         | yes            |
-| `repo view`      | none                   | host, repo                                                                                                         | no             |
-| `run cancel`     | run                    | host, repo                                                                                                         | yes            |
-| `run delete`     | run                    | host, repo                                                                                                         | yes            |
-| `run download`   | run, artifact, dir     | host, repo                                                                                                         | yes            |
-| `run list`       | none                   | host, repo, workflow, event, status, ref, commit, run_number, page, limit, all                                     | no             |
-| `run rerun`      | run                    | host, repo, job                                                                                                    | yes            |
-| `run view`       | run                    | host, repo, job, log, log_failed, output                                                                           | no             |
-| `run watch`      | run                    | host, repo, interval, timeout, exit_status                                                                         | no             |
-| `smoke echo`     | value                  | none                                                                                                               | yes            |
-| `workflow list`  | none                   | none                                                                                                               | no             |
-| `workflow run`   | workflow, ref          | host, repo, field, watch, interval, timeout                                                                        | yes            |
-| `workflow view`  | workflow               | none                                                                                                               | no             |
+| Exact leaf           | Required Request input   | Optional Request input                                                                                             | Approval-gated |
+| -------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------ | -------------- |
+| `api`                | endpoint                 | host, method, header, raw_field, field, input, page, limit, all, include, output                                   | conditional    |
+| `auth login`         | url, token               | none                                                                                                               | yes            |
+| `auth logout`        | host                     | none                                                                                                               | yes            |
+| `auth status`        | host                     | none                                                                                                               | no             |
+| `issue close`        | index                    | host, repo                                                                                                         | yes            |
+| `issue comment`      | index, body              | host, repo                                                                                                         | yes            |
+| `issue create`       | title                    | host, repo, body, assignee, label, milestone, due_date                                                             | yes            |
+| `issue delete`       | index                    | host, repo                                                                                                         | yes            |
+| `issue edit`         | index                    | host, repo, title, body, assignee, label, milestone, due_date                                                      | yes            |
+| `issue list`         | none                     | host, repo, state, label, assignee, author, mention, milestone, search, type, sort, page, limit, all               | no             |
+| `issue pin`          | index                    | host, repo                                                                                                         | yes            |
+| `issue reopen`       | index                    | host, repo                                                                                                         | yes            |
+| `issue status`       | none                     | host, repo                                                                                                         | no             |
+| `issue unpin`        | index                    | host, repo                                                                                                         | yes            |
+| `issue view`         | index                    | host, repo, comments                                                                                               | no             |
+| `pr checkout`        | index                    | host, repo, branch, force, remote                                                                                  | yes            |
+| `pr checks`          | index                    | host, repo, watch, interval, timeout                                                                               | no             |
+| `pr comment`         | index, body              | host, repo                                                                                                         | yes            |
+| `pr create`          | title, base              | host, repo, body, head, assignee, label, milestone, reviewer                                                       | yes            |
+| `pr diff`            | index                    | host, repo, patch, binary, output                                                                                  | no             |
+| `pr edit`            | index                    | host, repo, title, body, base, assignee, label, milestone                                                          | yes            |
+| `pr list`            | none                     | host, repo, state, base, head, author, label, milestone, sort, page, limit, all                                    | no             |
+| `pr merge`           | index                    | host, repo, merge, rebase, rebase_merge, squash, fast_forward_only, delete_branch, match_head, when_checks_succeed | yes            |
+| `pr review`          | index                    | host, repo, approve, request_changes, comment, body                                                                | yes            |
+| `pr view`            | index                    | host, repo, comments                                                                                               | no             |
+| `repo archive`       | none                     | host, repo                                                                                                         | yes            |
+| `repo branch-delete` | repo, branch, match_head | host                                                                                                               | yes            |
+| `repo clone`         | none                     | host, repo, directory, remote                                                                                      | yes            |
+| `repo create`        | name                     | host, owner, description, private, init, default_branch, source, remote, push                                      | yes            |
+| `repo delete`        | none                     | host, repo                                                                                                         | yes            |
+| `repo edit`          | none                     | host, repo, description, website, default_branch, visibility                                                       | yes            |
+| `repo fork`          | none                     | host, repo, owner, name, clone, remote                                                                             | yes            |
+| `repo list`          | none                     | host, owner, page, limit, visibility, archived                                                                     | no             |
+| `repo rename`        | name                     | host, repo                                                                                                         | yes            |
+| `repo unarchive`     | none                     | host, repo                                                                                                         | yes            |
+| `repo view`          | none                     | host, repo                                                                                                         | no             |
+| `run cancel`         | run                      | host, repo                                                                                                         | yes            |
+| `run delete`         | run                      | host, repo                                                                                                         | yes            |
+| `run download`       | run, artifact, dir       | host, repo                                                                                                         | yes            |
+| `run list`           | none                     | host, repo, workflow, event, status, ref, commit, run_number, page, limit, all                                     | no             |
+| `run rerun`          | run                      | host, repo, job                                                                                                    | yes            |
+| `run view`           | run                      | host, repo, job, log, log_failed, output                                                                           | no             |
+| `run watch`          | run                      | host, repo, interval, timeout, exit_status                                                                         | no             |
+| `smoke echo`         | value                    | none                                                                                                               | yes            |
+| `workflow list`      | none                     | none                                                                                                               | no             |
+| `workflow run`       | workflow, ref            | host, repo, field, watch, interval, timeout                                                                        | yes            |
+| `workflow view`      | workflow                 | none                                                                                                               | no             |
