@@ -60,6 +60,8 @@ export type CommitStatus = {
   state: string | null;
   target_url: string | null;
   description: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 };
 /**
  * The deduped commit statuses for one head, with the Host's own rollup verdict.
@@ -396,6 +398,8 @@ function normalizeStatus(value: unknown): CommitStatus {
     state: nullableString(source.status),
     target_url: nullableString(source.target_url),
     description: nullableString(source.description),
+    created_at: nullableString(source.created_at),
+    updated_at: nullableString(source.updated_at),
   };
 }
 /**

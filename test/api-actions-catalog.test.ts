@@ -45,6 +45,8 @@ const run: ActionRun = {
   prettyref: "main",
   created: "2025-01-01T00:00:00Z",
   updated: "2025-01-01T00:01:00Z",
+  started: "2025-01-01T00:00:00Z",
+  stopped: "2025-01-01T00:01:00Z",
   web_url: `${host}/octo/demo/actions/runs/9`,
 };
 const stubSwagger = JSON.stringify({

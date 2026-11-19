@@ -15,6 +15,8 @@ import {
  * Field names are the `ActionRun` names the Host advertises in `swagger.v1.json`, so drift in the
  * contract is visible rather than silently normalizing to null. Forgejo has no run-level
  * conclusion and no run-level attempt, so neither appears here; attempt exists per job only.
+ * `started` and `stopped` are the advertised `ActionRun` timestamps (ISO date-times); `stopped` is
+ * null while the run is still going, and both are null when the Host omits them.
  * `web_url` is the one house name, derived from the advertised `html_url`.
  */
 export type ActionRun = {
@@ -28,6 +30,8 @@ export type ActionRun = {
   prettyref: string | null;
   created: string | null;
   updated: string | null;
+  started: string | null;
+  stopped: string | null;
   web_url: string;
 };
 /**
@@ -35,7 +39,8 @@ export type ActionRun = {
  *
  * Field names are the `ActionRunJob` names the Host advertises in `swagger.v1.json`. Forgejo has
  * no job-level conclusion; `status` carries the outcome, so `failure` is read from there. The
- * attempt count is advertised as `attempt`, not GitHub's `run_attempt`.
+ * attempt count is advertised as `attempt`, not GitHub's `run_attempt`. `ActionRunJob` advertises
+ * no timestamps, so none are carried here; a job's timing is its run's `started` and `stopped`.
  */
 export type ActionJob = {
   id: number;
@@ -468,6 +473,8 @@ function run(host: string, owner: string, repo: string, value: unknown): ActionR
     prettyref: text(source.prettyref),
     created: text(source.created),
     updated: text(source.updated),
+    started: text(source.started),
+    stopped: text(source.stopped),
     // Forgejo keys the run page by the repository index, not the run ID.
     web_url: text(source.html_url) ?? `${host}/${owner}/${repo}/actions/runs/${index}`,
   };
