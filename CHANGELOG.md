@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/wyattjoh/forgejo/compare/v0.3.0...v0.4.0) (2026-11-19)
+
+
+### Features
+
+* pass through commit status and run timing fields ([#18](https://github.com/wyattjoh/forgejo/issues/18)) ([a6bb116](https://github.com/wyattjoh/forgejo/commit/a6bb116213b88fc6f08b11a6f629745b8e77dfeb))
+
 ## [0.3.0](https://github.com/wyattjoh/forgejo/compare/v0.2.3...v0.3.0) (2026-11-17)
 
 
