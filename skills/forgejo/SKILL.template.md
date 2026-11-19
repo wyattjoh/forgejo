@@ -466,7 +466,7 @@ Do not retry the mutation; upgrade the Host or use a supported command.
 ### Notes on the Actions surface
 
 - A run reports Forgejo's own field names: `title`, `status`, `commit_sha`,
-  `prettyref`, `created`, `updated`. There is no run-level `conclusion` or
+  `prettyref`, `created`, `updated`, `started`, `stopped`. There is no run-level `conclusion` or
   `attempt`; `attempt` exists only per job.
 - `run list` accepts a short branch name for `ref` (`"main"` becomes
   `refs/heads/main`) and the `#12` pull form. A tag is indistinguishable from a

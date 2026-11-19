@@ -231,6 +231,8 @@ test("commit statuses are normalized from the contract's status field", async ()
           status: "pending",
           target_url: "https://forgejo.example/run/1",
           description: "running",
+          created_at: "2025-01-01T00:00:00Z",
+          updated_at: "2025-01-01T00:00:12Z",
         },
       ],
     }),
@@ -244,6 +246,8 @@ test("commit statuses are normalized from the contract's status field", async ()
         state: "pending",
         target_url: "https://forgejo.example/run/1",
         description: "running",
+        created_at: "2025-01-01T00:00:00Z",
+        updated_at: "2025-01-01T00:00:12Z",
       },
     ],
   });
@@ -264,7 +268,16 @@ test("commit statuses come from the deduped combined endpoint, not the accumulat
   expect(await gateway.statuses(host, "synthetic-token", "octo", "demo", "abc")).toEqual({
     state: "success",
     total_count: 1,
-    statuses: [{ context: "build", state: "success", target_url: null, description: "Success" }],
+    statuses: [
+      {
+        context: "build",
+        state: "success",
+        target_url: null,
+        description: "Success",
+        created_at: null,
+        updated_at: null,
+      },
+    ],
   });
   expect(requested).toEqual([`${host}/api/v1/repos/octo/demo/commits/abc/status?limit=100`]);
 });
@@ -737,7 +750,14 @@ test("the default watch timeout outlasts a real check run", async () => {
   expect(new Set(timing.slept)).toEqual(new Set([5000]));
 });
 function status(state: string, context = "build"): CommitStatus {
-  return { context, state, target_url: null, description: null };
+  return {
+    context,
+    state,
+    target_url: null,
+    description: null,
+    created_at: null,
+    updated_at: null,
+  };
 }
 function combined(state: string): CombinedStatus {
   return { state, total_count: 1, statuses: [status(state)] };

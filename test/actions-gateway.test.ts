@@ -130,6 +130,8 @@ test("a normalized run carries the title, status, commit, ref, and timestamps Fo
     prettyref: "main",
     created: "2025-01-01T00:00:00Z",
     updated: "2025-01-01T00:01:00Z",
+    started: "2025-01-01T00:00:00Z",
+    stopped: "2025-01-01T00:01:00Z",
     web_url: `${host}/${owner}/${repo}/actions/runs/9`,
   });
 });
@@ -339,6 +341,8 @@ test("a dispatched run keeps its run number and derives a web URL from it", () =
       prettyref: null,
       created: null,
       updated: null,
+      started: null,
+      stopped: null,
       web_url: `${host}/${owner}/${repo}/actions/runs/9`,
     },
   );
